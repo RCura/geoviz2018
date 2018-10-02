@@ -24,12 +24,15 @@ duo(
   text_font_google   = google_font("Montserrat", "300", "300i"),
   code_font_google   = google_font("Droid Mono")
 )
-
+library(knitr)
+opts_chunk$set(cache = TRUE,
+               cache.lazy = FALSE)
 hook_source <- knitr::knit_hooks$get('source')
 knitr::knit_hooks$set(source = function(x, options) {
   x <- stringr::str_replace(x, "^[[:blank:]]?([^*].+?)[[:blank:]]*#<<[[:blank:]]*$", "*\\1")
   hook_source(x, options)
 })
+
 ```
 
 

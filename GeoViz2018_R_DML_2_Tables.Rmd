@@ -21,6 +21,9 @@ duo(
   text_font_google   = google_font("Montserrat", "300", "300i"),
   code_font_google   = google_font("Droid Mono")
 )
+library(knitr)
+opts_chunk$set(cache = TRUE,
+               cache.lazy = FALSE)
 ```
 
 ## Lecture de tables : `readr`
