@@ -116,6 +116,10 @@ iris_Paris_sf
 
 - $\rightarrow$ Un `data.frame`, doté d'une colonne de `geometry` et d'un **système de coordonnées/projection**.
 
+```{r, echo = FALSE}
+rm(iris_Paris_sf, iris_Paris_sp)
+```
+
 ---
 ## Lecture de fichiers géographiques
 
@@ -124,7 +128,7 @@ iris_Paris_sf
 - Lecture d'un shapefile
 .small[
 ```{r}
-communesIDF <- st_read(dsn = "data/IRIS_Paris_L93.shp", 
+irisIDF <- st_read(dsn = "data/IRIS_Paris_L93.shp", 
                        stringsAsFactors = FALSE) # Comme pour la lecture des data.frame
 ```
 ]
@@ -135,7 +139,7 @@ communesIDF <- st_read(dsn = "data/IRIS_Paris_L93.shp",
 
 .small[
 ```{r}
-st_crs(communesIDF)
+st_crs(irisIDF)
 ```
 ]
 
@@ -143,9 +147,9 @@ Ici, le "code de projection" est bien reconnu, mais le code EPSG n'est pas rense
 
 .small[
 ```{r}
-communesIDF <- communesIDF %>%
+irisIDF <- irisIDF %>%
   st_set_crs(2154) # SRID/EPSG du Lambert 93
-head(communesIDF)
+head(irisIDF)
 ```
 ]
 
@@ -157,7 +161,7 @@ head(communesIDF)
 .pull-left[
 .small[
 ```{r}
-communesIDF %>%
+irisIDF %>%
   select(geometry) %>% # Lambert 93
   plot()
 ```
@@ -169,7 +173,7 @@ communesIDF %>%
 ```{r}
 GallPeters <- "+proj=cea +lon_0=0 +lat_ts=45 \
   +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
-communesIDF %>%
+irisIDF %>%
   select(geometry) %>%
   st_transform(crs = GallPeters) %>% #<<
   plot()
@@ -184,7 +188,7 @@ On peut utiliser la fonction de base `plot()`, qui affiche alors l'ensemble des 
 
 .small[
 ```{r, fig.width = 12, fig.height = 5}
-plot(communesIDF)
+plot(irisIDF)
 ```
 ]
 
@@ -195,7 +199,7 @@ Pour "cartographier" le contenu d'une seule variable :
 
 .small[
 ```{r, fig.width = 12, fig.height = 5}
-plot(communesIDF["Nom_Com"])
+plot(irisIDF["Nom_Com"])
 ```
 ]
 
@@ -207,7 +211,7 @@ Le *package* `mapview` permet de mener rapidement une exploration des données s
 .small[
 ```{r, message = FALSE, fig.width=10, fig.height = 5}
 library(mapview) # install.packages("mapview")
-mapview(communesIDF)
+mapview(irisIDF)
 ```
 ]
 
@@ -220,7 +224,7 @@ On peut aussi spécifier un attribut à observer avec l'instruction `zcol` :
 
 .small[
 ```{r, message = FALSE, fig.width=10, fig.height = 5}
-mapview(communesIDF, zcol = "Nom_Com")
+mapview(irisIDF, zcol = "Nom_Com")
 ```
 ]
 
@@ -231,7 +235,7 @@ Comme l'objet `sf` est fondamentalement un `data.frame`, on peut lui appliquer l
 
 .small[
 ```{r, fig.width=11, fig.height = 3.5}
-communesIDF %>%
+irisIDF %>%
   select(DepCom, DComIris) %>% # La sélection de la colonne `geometry` est implicite #<<
   mutate(ARRONDISSEMENT = as.numeric(DepCom) - 100) %>% #<<
   filter(ARRONDISSEMENT >= 75001, ARRONDISSEMENT <= 75007) %>%#<<
@@ -247,7 +251,7 @@ La géométrie est alors, elle-aussi, agrégée en conséquence :
 
 .small[
 ```{r}
-arrondissements_Paris <- communesIDF %>%
+arrondissements_Paris <- irisIDF %>%
   group_by(DepCom) %>%
   summarise()
 
@@ -262,7 +266,8 @@ Comme pour tous les `data.frame`, on peut réaliser des jointures attributaires 
 
 .smaller[
 ```{r}
-joinData <- readRDS("dans_ma_rue_clean.RDS") %>%
+df_dmr  <- readRDS("dans_ma_rue_clean.RDS")
+joinData <-  df_dmr %>%
   group_by(CODE_POSTAL, ANNEE_DECLARATION) %>%
   summarise(NbIncidents = n()) %>%
   ungroup()
@@ -271,19 +276,19 @@ donnees_incidents <- arrondissements_Paris %>%
   mutate(CODGEO = as.character(as.numeric(DepCom) - 100)) %>%
   left_join(joinData, by = c("CODGEO" = "CODE_POSTAL")) #<<
 
-incidents2013 <- filter(donnees_incidents, ANNEE_DECLARATION == 2013)
+incidents2015 <- filter(donnees_incidents, ANNEE_DECLARATION == 2015)
 incidents2017 <- filter(donnees_incidents, ANNEE_DECLARATION == 2017)
 
 commonBreaks <- joinData %>%
-  filter(ANNEE_DECLARATION %in% c(2013, 2017)) %>%
+  filter(ANNEE_DECLARATION %in% c(2015, 2017)) %>%
   pull(NbIncidents) %>%
   quantile(probs = seq(from = 0, to = 1, by = 0.1))
 ```
 
 .pull-left[
 ```{r, fig.height = 3.5}
-plot(incidents2013[,"NbIncidents"],
-     main = "Incidents 2013",
+plot(incidents2015[,"NbIncidents"],
+     main = "Incidents 2015",
      breaks = commonBreaks)
 ```
 ]
@@ -305,8 +310,8 @@ Les objets `sf` sont des objets spatiaux, on peut donc aussi effectuer des joint
 
 .small[
 ```{r}
-dmr_spatial <- readRDS("dans_ma_rue_clean.RDS") %>%
-  filter(ANNEE_DECLARATION %in% c(2013, 2017)) %>%
+dmr_spatial <- df_dmr %>%
+  filter(ANNEE_DECLARATION %in% c(2015, 2017)) %>%
   st_as_sf(coords = c("Long", "Lat"), crs = 4326) %>% #<<
   st_transform(2154) # Pour une opération géométrique, les objets doivent avoir le même SRID
 ```
@@ -317,7 +322,7 @@ dmr_spatial <- readRDS("dans_ma_rue_clean.RDS") %>%
 .small[
 ```{r}
 dmr_augmente <- dmr_spatial %>%
-  st_join(communesIDF %>% select(DComIris), join = st_within) #<<
+  st_join(irisIDF %>% select(DComIris), join = st_within) #<<
 ```
 
 .pull-left[
@@ -341,26 +346,109 @@ dmr_augmente %>%
 ---
 ## Opérations spatiales
 
+`sf` permet de réaliser la quasi-totalité des opérations attendues d'un SIG, avec des fonctions dédiées reprenant le vocabulaire classique (inspiré par `PostGIS`) :
 
+`st_agr`, `st_area`, `st_bbox`, `st_bind_cols`, `st_boundary`, `st_buffer`, `st_cast`, `st_centroid`, `st_combine`, `st_contains`, `st_contains_properly`, `st_convex_hull`, `st_covered_by`, `st_covers`, `st_crop`, `st_crosses`, `st_difference`, `st_disjoint`, `st_distance`, `st_equals`, `st_equals_exact`, `st_graticule`, `st_interpolate_aw`, `st_intersection`, `st_intersects`, `st_is_simple`, `st_is_valid`, `st_is_within_distance`, `st_jitter`, `st_join`, `st_layers`, `st_length`, `st_line_merge`, `st_line_sample`, `st_make_grid`, `st_overlaps`, `st_point_on_surface`, `st_polygonize`, `st_relate`, `st_sample`, `st_segmentize`, `st_simplify`, `st_snap`, `st_sym_difference`, `st_touches`, `st_transform`, `st_triangulate`, `st_union`, `st_viewport`, `st_voronoi`, `st_within`, `st_wrap_dateline`, `st_write`, `st_write_db`, `st_zm`, `write_sf`
 
+Voir les exemples illustrées dans les *vignettes* du *package* `sf` : [Manipulating Simple Feature Geometries](https://cran.r-project.org/web/packages/sf/vignettes/sf3.html) et
+[Manipulating Simple Features](https://cran.r-project.org/web/packages/sf/vignettes/sf4.html)
 
 
 ---
-## Opérations spatiales
-st_*
+## Opérations spatiales : un exemple de traitement
+
+-> On peut chercher à créer une carte des densités d'incidents déclarés par IRIS, potentiellement selon les années :
+
+.small[
+```{r}
+nbIncidentsIris <- dmr_spatial %>%
+  st_join(irisIDF %>% select(DComIris), join = st_within) %>%
+  st_set_geometry(NULL) %>% # On n'a plus besoin que ce soit un objet spatial
+  group_by(DComIris, ANNEE_DECLARATION) %>%
+  summarise(NbIncidents = n()) %>% #<<
+  ungroup()
+
+irisIDF_Incidents <- irisIDF %>%
+  mutate(surface = st_area(.)) %>% #<<
+  left_join(nbIncidentsIris, by = "DComIris")
+
+densite_incidents <- irisIDF_Incidents %>%
+  mutate(densiteIncidents = NbIncidents / (surface / 1E6)) %>% # Pour avoir une densité / km² #<<
+  select(DepCom, DComIris, ANNEE_DECLARATION, NbIncidents, densiteIncidents)
+
+# Les densités sont exprimées avec des "unitées", qui complexifient le traitement.
+# On les enlève donc :
+
+densite_incidents <- densite_incidents %>%
+  mutate(densiteIncidents = units::drop_units(densiteIncidents))
+```
+]
 
 ---
 ## Cartographie exploratoire : `mapview`
 
+.small[
+```{r, eval = FALSE}
+densite2015 <- filter(densite_incidents, ANNEE_DECLARATION == 2015)
+densite2017 <- filter(densite_incidents, ANNEE_DECLARATION == 2017)
+
+map2015 <- mapview(densite2015, zcol = "densiteIncidents", legend = TRUE)
+map2017 <- mapview(densite2017, zcol = "densiteIncidents", legend = TRUE)
+
+latticeView(map2013, map2017, ncol = 2)
+
+```
+]
+
+---
+## Cartographie exploratoire : `mapview`
+
+.small[
+```{r, eval = TRUE, echo = FALSE}
+densite2015 <- filter(densite_incidents, ANNEE_DECLARATION == 2015)
+densite2017 <- filter(densite_incidents, ANNEE_DECLARATION == 2017)
+
+map2015 <- mapview(densite2015, zcol = "densiteIncidents", legend = TRUE)
+map2017 <- mapview(densite2017, zcol = "densiteIncidents", legend = TRUE)
+
+latticeView(map2015, map2017, ncol = 2)
+
+```
+]
+
+
 ---
 ## Cartographie statique : `ggplot2`
 
-ggplot2 + geom_sf
+On peut bien sûr afficher ces éléments avec le *package* `ggplot2`, en faisant appel à la géométrie dédiée aux objets de type `sf` : `geom_sf`
+
+.small[
+```{r, fig.width = 12, fig.height = 4.5}
+ggplot(densite_incidents) +
+  geom_sf(data = densite_incidents, aes(fill = densiteIncidents), lwd = 0) +
+  # On est obligé de remettre la couche sf en data #<<
+  facet_wrap(~ANNEE_DECLARATION) +
+  scale_fill_viridis_c(name = "Incidents / Km²") +
+  guides(fill = guide_colourbar(title.position = "top")) +
+  coord_sf() + # On s'assure que les coordonnées du graphique respectent le CRS #<< 
+  theme_minimal() +
+  theme(legend.position = "bottom", legend.key.width = unit(2,"cm")) 
+```
+]
+
+---
+## Cartographie statique : `ggplot2`
+
+- Certains *packages* (`ggsn`, `ggmap`) proposent des foncitonnalités permettant d'améliorer le rendu cartographique (échelles graphiques, flèches d'orientations, fonds de cartes...) ;
+
+- mais `ggplot` est avant tout un outil de visualisation **générique** :
+
+- pour créer des cartographies de qualité, mieux vaut se tourner vers des *packages* dédiés : `tmap` (qu'on ne verra pas ici) et `cartography` 
 
 ---
 ## Cartographie statique : `cartography`
 
-cartography
+À faire :(
 
 ---
 ## Cartographie dynamique : `leaflet`
