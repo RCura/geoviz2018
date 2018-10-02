@@ -1,7 +1,7 @@
 ---
-title: "Interfaces graphiques avec R"
-subtitle: "Utilisation de `shiny` pour créer des applications d'exploration de données"
-author: "Robin Cura, Hélène Mathian & Lise Vaudor"
+title: "Interfaces graphiques avec R et `shiny`"
+subtitle: "1 - Les concepts de base de shiny"
+author: "Robin Cura, Hélène Mathian & Lise Vaudor<br/>d'après L. Vaudor : <u><a href='https://github.com/lvaudor/support_shiny'>Formation shiny (2018)</a></u>"
 date: ["16/10/2018<br/><br /> École Thématique GeoViz 2018 "]
 output:
   xaringan::moon_reader:
@@ -33,3 +33,14 @@ knitr::knit_hooks$set(source = function(x, options) {
 
 ## Shiny : concepts
   
+-> On repart de l'application de base de shiny (création d'une nouvelle appli) qu'on complexifie un tout petit peu pour l'adapter aux données Communes
+    -> ui/server
+    -> ui : input
+    -> ui : output
+    -> server : input
+    -> server : output
+    -> server : reactive()
+    -> server : observe()
+    -> server : updateInput()
+    -> mettre un leaflet + leafletProxy()
+    -> mettre un ggplotly()
