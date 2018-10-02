@@ -13,7 +13,7 @@ output:
 editor_options: 
   chunk_output_type: console
 ---
-  ```{r xaringan-themer, include = FALSE}
+```{r xaringan-themer, include = FALSE}
 library(xaringan)
 library(xaringanthemer) # devtools::install_github("gadenbuie/xaringanthemer")
 duo(
@@ -23,6 +23,9 @@ duo(
   text_font_google   = google_font("Montserrat", "300", "300i"),
   code_font_google   = google_font("Droid Mono")
 )
+library(knitr)
+opts_chunk$set(cache = TRUE,
+               cache.lazy = FALSE)
 
 hook_source <- knitr::knit_hooks$get('source')
 knitr::knit_hooks$set(source = function(x, options) {
@@ -30,5 +33,3 @@ knitr::knit_hooks$set(source = function(x, options) {
   hook_source(x, options)
 })
 ```
-
-## Shiny : concepts

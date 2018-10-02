@@ -23,7 +23,9 @@ duo(
   text_font_google   = google_font("Montserrat", "300", "300i"),
   code_font_google   = google_font("Droid Mono")
 )
-
+library(knitr)
+opts_chunk$set(cache = TRUE,
+               cache.lazy = FALSE)
 hook_source <- knitr::knit_hooks$get('source')
 knitr::knit_hooks$set(source = function(x, options) {
   x <- stringr::str_replace(x, "^[[:blank:]]?([^*].+?)[[:blank:]]*#<<[[:blank:]]*$", "*\\1")
@@ -33,14 +35,15 @@ knitr::knit_hooks$set(source = function(x, options) {
 
 ## Shiny : concepts
   
--> On repart de l'application de base de shiny (création d'une nouvelle appli) qu'on complexifie un tout petit peu pour l'adapter aux données Communes
-    -> ui/server
-    -> ui : input
-    -> ui : output
-    -> server : input
-    -> server : output
-    -> server : reactive()
-    -> server : observe()
-    -> server : updateInput()
-    -> mettre un leaflet + leafletProxy()
-    -> mettre un ggplotly()
+- On repart de l'application de base de shiny (création d'une nouvelle appli) qu'on complexifie un tout petit peu pour l'adapter aux données Communes
+
+    - ui/server
+    - ui : input
+    - ui : output
+    - server : input
+    - server : output
+    - server : reactive()
+    - server : observe()
+    - server : updateInput()
+    - mettre un leaflet + leafletProxy()
+    - mettre un ggplotly()
