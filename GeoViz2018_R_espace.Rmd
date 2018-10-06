@@ -36,7 +36,42 @@ knitr::knit_hooks$set(source = function(x, options) {
 })
 ```
 
+## Sommaire
+.pull-left[
+Charger des données spatiales
+- [Les Simples Features et R](#objets-sf)
+- [Lecture de fichiers spatiaux](#lecture-sf)
+- [Conversion de tableaux en sf](#conversion-spatiale)
+
+Manipuler des données spatiales
+- [Éditer des données](#modifier-sf)
+- [Systèmes de projections](#projections-sf)
+- [Agrégations spatiales](#agregations-sf)
+- [Jointures spatiales](#jointures-spatiales)
+- [Opérations géométriques](#operations-spatiales)
+
+
+- [Quelques exemples d'analyse spatiale avec R](#analyse-spatiale)
+]
+
+.pull-right[
+Exploration visuelle de données spatiales
+- [Afficher un objet avec plot](#plot-sf)
+- [Exploration rapide avec mapview](#plot-mapview)
+- [Exploration thématique avec mapview](#carto-mapview)
+
+Cartographier avec R
+- [Cartographier avec ggplot2](#carto-ggplot2)
+- [Cartographie statique avec cartography](#carto-cartography)
+- [Cartographie dynamique avec leaflet](#carto-leaflet)
+
+]
+
+
+---
 ## Les données spatiales dans R
+
+
 
 Deux formats de données spatiales coexistent :
   - `sp`, le format le plus ancien et répendu
@@ -95,7 +130,9 @@ On va se contenter de mobiliser le *package* `sf`, qui permet une manipulation d
 
 
 ---
+name: objets-sf
 ## `sf` : Les *Simples Features*
+
 
 .small[
 .center[
@@ -121,6 +158,7 @@ rm(iris_Paris_sf, iris_Paris_sp)
 ```
 
 ---
+name: lecture-sf
 ## Lecture de fichiers géographiques
 
 #### Toutes les fonctions de `sf` s'inspirent de la syntaxe des fonctions `PostGIS` : `st_OPERATION` :
@@ -133,6 +171,7 @@ irisIDF <- st_read(dsn = "data/IRIS_Paris_L93.shp",
 ```
 ]
 ---
+name: projections-sf
 ## Projections / transformations
 
 #### Comme dans tout SIG, le système de projection (`st_crs`) est récuperé à la lecture d'un objet :
@@ -182,6 +221,7 @@ irisIDF %>%
 ]
 
 ---
+name: plot-sf
 ## Visualisation exploratoire : `plot()`
 
 On peut utiliser la fonction de base `plot()`, qui affiche alors l'ensemble des attributs du jeu de données :
@@ -204,6 +244,7 @@ plot(irisIDF["Nom_Com"])
 ]
 
 ---
+name: plot-mapview
 ## Visualisation exploratoire : `mapview`
 
 Le *package* `mapview` permet de mener rapidement une exploration des données spatiales et attributaires :
@@ -229,6 +270,7 @@ mapview(irisIDF, zcol = "Nom_Com")
 ]
 
 ---
+name: modifier-sf
 ## Opérations attributaires
 
 Comme l'objet `sf` est fondamentalement un `data.frame`, on peut lui appliquer les manipulations vues hier : filtrage (`filter`), réductions de variables (`select`), renommage de variables (`rename`) et création/modification de variables (`mutate`) :
@@ -244,6 +286,7 @@ irisIDF %>%
 ]
 
 ---
+name: agregations-sf
 ## Agrégations
 
 Comme avec un `tibble`, on peut réaliser des opérations d'agrégation.
@@ -302,7 +345,8 @@ plot(incidents2017[,"NbIncidents"],
 ]
 ]
 ---
-## Jointures spatiales
+name: conversion-spatiale
+## Conversion en `sf` et jointures spatiales
 
 Les objets `sf` sont des objets spatiaux, on peut donc aussi effectuer des jointures spatiales (entre deux objets `sf`) :
 
@@ -316,6 +360,12 @@ dmr_spatial <- df_dmr %>%
   st_transform(2154) # Pour une opération géométrique, les objets doivent avoir le même SRID
 ```
 ]
+
+
+---
+name: jointures-spatiales
+## Jointures spatiales
+
 
 - Jointure spatiale pour récuperer les IRIS contenant les points :
 
@@ -341,10 +391,9 @@ dmr_augmente %>%
 ```
 ]
 ]
-
-
 ---
 ## Opérations spatiales
+name: operations-spatiales
 
 `sf` permet de réaliser la quasi-totalité des opérations attendues d'un SIG, avec des fonctions dédiées reprenant le vocabulaire classique (inspiré par `PostGIS`) :
 
@@ -376,7 +425,7 @@ densite_incidents <- irisIDF_Incidents %>%
   mutate(densiteIncidents = NbIncidents / (surface / 1E6)) %>% # Pour avoir une densité / km² #<<
   select(DepCom, DComIris, ANNEE_DECLARATION, NbIncidents, densiteIncidents)
 
-# Les densités sont exprimées avec des "unitées", qui complexifient le traitement.
+# Les densités sont exprimées avec des "unités", qui complexifient le traitement.
 # On les enlève donc :
 
 densite_incidents <- densite_incidents %>%
@@ -385,6 +434,7 @@ densite_incidents <- densite_incidents %>%
 ]
 
 ---
+name: carto-mapview
 ## Cartographie exploratoire : `mapview`
 
 .small[
@@ -418,6 +468,7 @@ latticeView(map2015, map2017, ncol = 2)
 
 
 ---
+name: carto-ggplot2
 ## Cartographie statique : `ggplot2`
 
 On peut bien sûr afficher ces éléments avec le *package* `ggplot2`, en faisant appel à la géométrie dédiée aux objets de type `sf` : `geom_sf`
@@ -443,17 +494,146 @@ ggplot(densite_incidents) +
 
 - mais `ggplot` est avant tout un outil de visualisation **générique** :
 
-- pour créer des cartographies de qualité, mieux vaut se tourner vers des *packages* dédiés : `tmap` (qu'on ne verra pas ici) et `cartography` 
+#### - pour créer des cartographies de qualité, mieux vaut se tourner vers des *packages* dédiés : `tmap` (qu'on ne verra pas ici) et `cartography` 
+
+---
+name: carto-cartography
+## Cartographie statique : `cartography`
+
+#### Exemple d'une carte en symboles proportionnels
+
+.small[
+```{r, fig.show="hold", eval = FALSE}
+library(cartography)
+# On commence par afficher un fond de carte
+par(mar=c(0,0,0,0))
+plot(st_geometry(arrondissements_Paris),
+     col = "#1F4257",
+     border = "#B6C1C8",
+     bg = "#708694",
+     lwd = 2)
+
+# On ajoute des symboles proportionnels pour les incidents
+propSymbolsLayer(x = densite_incidents %>% filter(ANNEE_DECLARATION == 2017),
+                 var = "NbIncidents",
+                 col = "#F97B64",
+                 inches = 0.1, 
+                 legend.title.txt = "Nombre de déclarations par IRIS en 2017")
+
+# On ajoute les labels des arrondissements
+labelLayer(x = arrondissements_Paris %>% mutate(DepCom = as.numeric(DepCom) - 100),
+           txt = "DepCom",
+           col = "#B6C1C8",
+           bg = "#1F4257",
+           halo = TRUE,
+           overlap = FALSE, show.lines = FALSE)
+
+```
+]
 
 ---
 ## Cartographie statique : `cartography`
 
-À faire :(
+#### Exemple d'une carte en symboles proportionnels
+.center[
+.small[
+```{r, fig.show="hold", eval = TRUE, echo = FALSE, fig.height = 5.5}
+library(cartography)
+# On commence par afficher un fond de carte
+par(mar=c(0,0,0,0))
+plot(st_geometry(arrondissements_Paris),
+     col = "#1F4257",
+     border = "#B6C1C8",
+     bg = "#708694",
+     lwd = 2)
+
+# On ajoute des symboles proportionnels pour les incidents
+propSymbolsLayer(x = densite_incidents %>% filter(ANNEE_DECLARATION == 2017),
+                 var = "NbIncidents",
+                 col = "#F97B64",
+                 inches = 0.1, 
+                 legend.title.txt = "Nombre de déclarations par IRIS en 2017")
+
+# On ajoute les labels des arrondissements
+labelLayer(x = arrondissements_Paris %>% mutate(DepCom = as.numeric(DepCom) - 100),
+           txt = "DepCom",
+           col = "#B6C1C8",
+           bg = "#1F4257",
+           halo = TRUE,
+           overlap = FALSE, show.lines = FALSE)
+
+```
+]
+]
+---
+name: carto-leaflet
+## Cartographie dynamique : `leaflet`
+
+#### - Pour créer des cartes "dynamiques", en plus de `mapview` (qui sert surtout à l'exploration de données), on peut utiliser le *package* `leaflet`, qui génère une carte en HTML+JavaScript que l'on pourra placer sur une page web quelconque :
+
+.small[
+```{r, eval = FALSE, echo = TRUE}
+library(leaflet)
+densite_incidents2017 <- densite_incidents %>%
+  filter(ANNEE_DECLARATION == 2017) %>%
+  st_transform(4326) # Leaflet requiert une couche en WGS84
+
+seuils <- quantile(densite_incidents2017$densiteIncidents,
+                   probs = seq(from = 0, to = 1, by = 0.2))
+
+colorPalette <- colorBin("YlOrRd",
+                         domain = densite_incidents2017$densiteIncidents,
+                         bins = seuils)
+
+infosPopup <- sprintf("<strong>%s</strong><br/>%s incidents  (%.1f / km²)",
+                      densite_incidents2017$DComIris,
+                      densite_incidents2017$NbIncidents,
+                      densite_incidents2017$densiteIncidents) %>% lapply(htmltools::HTML)
+
+leaflet(data = densite_incidents2017) %>%
+  addProviderTiles(providers$CartoDB.DarkMatterNoLabels) %>%
+  addPolygons(
+    fillColor = ~colorPalette(densiteIncidents), fillOpacity = 0.7,
+    color = "white", weight = .5, opacity = 1, dashArray = "3",
+    label = infosPopup) %>%
+  addLegend(pal = colorPalette, values = ~densiteIncidents, opacity = 0.7,
+            title = "Densités d'incidents<br/>[incident/km²]", position = "topright")
+```
+]
 
 ---
 ## Cartographie dynamique : `leaflet`
 
+#### - Pour créer des cartes "dynamiques", en plus de `mapview` (qui sert surtout à l'exploration de données), on peut utiliser le *package* `leaflet`, qui génère une carte en HTML+JavaScript que l'on pourra placer sur une page web quelconque :
+
+.small[
+```{r, eval = TRUE, echo = FALSE, message=FALSE, warning=FALSE, fig.width = 10, fig.height = 5.5}
+library(leaflet)
+densite_incidents2017 <- densite_incidents %>%
+  filter(ANNEE_DECLARATION == 2017) %>%
+  st_transform(4326) # Leaflet requiert une couche en WGS84
+
+seuils <- quantile(densite_incidents2017$densiteIncidents, probs = seq(from = 0, to = 1, by = 0.2))
+colorPalette <- colorBin("YlOrRd", domain = densite_incidents2017$densiteIncidents, bins = seuils)
+infosPopup <- sprintf("<strong>%s</strong><br/>%s incidents  (%.1f / km²)",
+                      densite_incidents2017$DComIris,
+                      densite_incidents2017$NbIncidents,
+                      densite_incidents2017$densiteIncidents) %>% lapply(htmltools::HTML)
+
+leaflet(data = densite_incidents2017) %>%
+  addProviderTiles(providers$CartoDB.DarkMatterNoLabels) %>%
+  addPolygons(
+    fillColor = ~colorPalette(densiteIncidents), fillOpacity = 0.7,
+    color = "white", weight = .5, opacity = 1, dashArray = "3",
+    label = infosPopup) %>%
+  addLegend(pal = colorPalette, values = ~densiteIncidents, opacity = 0.7,
+            title = "Densités d'incidents<br/>[incident/km²]",
+            position = "topright")
+```
+]
 
 ---
+name: analyse-spatiale
 ## Un peu d'analyse spatiale ?
+
 

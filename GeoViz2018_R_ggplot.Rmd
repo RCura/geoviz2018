@@ -34,8 +34,29 @@ knitr::knit_hooks$set(source = function(x, options) {
 })
 
 ```
+## Sommaire
+
+[La *Grammar of Graphics*](#grammar-of-graphics)
+
+[Les composants d'un graphique ggplot2](#ggplot2)
+- [Des données `tidy`](#tidy-data)
+- [Les géométries : `geom_`](#geoms)
+- [Mapper les variables aux géométries : les `aesthetics`](#aesthetics)
+- [Organiser les échelles : `scale_`](#scales)
+- [Ratios et systèmes de coordonnées : `coords`](#coords)
+- [Les `labels` d'un graphique](#labels)
+- [Définir les légendes : les `guides`](#legendes)
+- [Décomposer un graphique selon des `facets`](#facets)
+- [Superposition de couches](#add-layers)
+- [Composition d'un planche avec `patchwork`](#patchwork)
+
+[Exercice d'application](#exercice)
+
+[Ressources et supports](#supports)
 
 
+---
+name: grammar-of-graphics
 ## La *Grammar of Graphics*
 Conceptualisée par Leland Wilkinson (2006 [1999])
 
@@ -111,6 +132,7 @@ Healy, K. (2018). Data Visualization: A Practical Introduction. S.l.: Princeton 
 ]
 
 ---
+name: ggplot2
 ## `ggplot2` : une implémentation de la *grammar of graphics*
 Décrire la syntaxe d'un graphique à l'aide d'une grammaire composée d'éléments atomiques :
 
@@ -125,6 +147,7 @@ Décrire la syntaxe d'un graphique à l'aide d'une grammaire composée d'éléme
 Tous ces éléments s'accumulent, comme des propriétés supplémentaires, via l'opérateur `+`
     
 ---
+name: tidy-data
 ## Les données
 
 - Tout graphique `ggplot2` doit commencer par un appel aux données :
@@ -169,6 +192,7 @@ ggplot(data = df_dmr_spatialise)
 ]
 ]
 ---
+name: geoms
 ## Les géométries
 
 - Le composant de base des graphiques : quelle géométrie donner à chaque couche (*layer*) de données ?
@@ -190,6 +214,7 @@ ggplot(data = df_dmr_spatialise)
 ![:scale 80%](img/ggplot_geom_cheatsheet.png)
 ]
 ---
+name: aesthetics
 ## Les *aesthetics*
 
 - Chaque géométrie comporte des propriétés, génériques (`x`, `y`, `colour`...) ou spécifiques (`linetype`, `shape`, `xmin`...) qui doivent être rapportées (avec un **mapping**) à des variables : ce sont les "esthétiques" (`aes`)
@@ -284,6 +309,7 @@ ggplot(colData) +
 ]
 
 ---
+name: scales
 ## Les échelles
 
 - Quand on veut modifier la manière dont les axes sont conçus, on peut jouer sur les **échelles** (`scale_`)
@@ -356,6 +382,7 @@ ggplot(colData) +
 ```
 ]
 ---
+name: coords
 ## Les coordonnées
 
 - On l'a vu avec les "cartes" de répartition, `ggplot2` affiche un graphique en maximisant l'espace disponible pour chaque axe : quand les rapports entre les coordonnées `x` et `y` ont un sens, il faut l'expliciter avec les `coord_` :
@@ -392,6 +419,7 @@ ggplot(pointData) +
 ]
 
 ---
+name: labels
 ## Habillage : textes
 
 - Par défaut, les textes (titres des axes etc.) prennent comme valeur automatique le nom des variables qui leurs sont attribuées.
@@ -412,6 +440,7 @@ ggplot(pointData) +
 ]
 
 ---
+name: legendes
 ## Habillage : légendes
 
 - On peut modifier et désactiver les légendes directement depuis les échelles (`scales`) correspondantes.
@@ -432,6 +461,7 @@ ggplot(pointData) +
 ```
 ]
 ---
+name: facets
 ## Décomposer un graphique : les *facets*
 
 On peut "décomposer" un graphique (en *small multiples*) avec les instructions `facet_` :
@@ -528,6 +558,7 @@ ggplot(pointData %>% filter(!is.na(SOUSTYPE))) +
 ]
 
 ---
+name: add-layers
 ## Superposer des couches graphiques
 
 `ggplot2` permet d'empiler des couches de représentations portant sur les mêmes données (représentations différentes) ou sur d'autres jeux de données (si tant est qu'ils se situent dans les mêmes étendues graphiques).
@@ -585,6 +616,7 @@ ggplot(pointData) +
 ]
 
 ---
+name: patchwork
 ## Composer une planche de graphiques
 
 - Avec le *package* `patchwork`, on peut facilement agencer différents graphiques
@@ -660,6 +692,7 @@ evolArrdt
 
 
 ---
+name: supports
 ## Cheatsheets
 
 .pull-left[
@@ -685,7 +718,9 @@ www.rstudio.com/resources/cheatsheets/#ggplot2
 - Livres
 
 ---
+name: exercice
 class: inverse, center, middle
 
 ### Un peu de pratique ! <br/>Proposer des représentations graphiques, à partir du jeu de données "Dans ma Rue", permettant de saisir l'évolution, dans le temps et dans l'espace, des signalements d'anomalies.
+
 

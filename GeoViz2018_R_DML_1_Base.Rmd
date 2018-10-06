@@ -25,7 +25,38 @@ library(knitr)
 opts_chunk$set(cache = TRUE,
                cache.lazy = FALSE)
 ```
+## Sommaire
+.pull-left[
+Environnement R
+- [Organisation de RStudio](#rstudio)
+- [Assignation de variables](#assignation)
+- [Afficher un objet](#afficher-objet)
+- [Les classes d'objets](#classes-objets)
+- [Les fonctions](#fonctions)
+- [Les packages](#packages)
 
+Les opérateurs
+- [Opérateurs arithmétiques](#operateurs-arithmetiques)
+- [Opérateurs de comparaison](#operateurs-comparaison)
+- [Opérateurs logiques](#operateurs-logiques)
+- [Indicateurs statistiques](#indicateurs-stats)
+]
+
+.pull-right[
+Manipuler des vecteurs
+- [Créer un vecteur](#creer-vecteur)
+- [Créer un facteur](#creer-facteur)
+- [Conversion de vecteurs](#conversion-objets)
+- [Les valeurs manquantes](#valeurs-manquantes)
+
+Manipuler des tableaux
+- [Créer des tableaux](#creer-tableaux)
+- [Indexation en R](#indexation-objets)
+- [Les structures de données](#structure-donnees)
+- [Afficher un tableau](#afficher-tableau)
+]
+
+---
 # Pourquoi utiliser le logiciel R?
 
 .pull-left[
@@ -74,6 +105,7 @@ En contrepartie de sa polyvalence et de sa flexibilité, R peut être un peu dé
 - Pour simplifier l'usage de ce langage, on le mobilise au sein d'un **IDE** adapté : **RStudio**
 
 ---
+name: rstudio
 # RStudio
 
 - Nous allons travailler sur un éditeur de script (ou plus précisément un **IDE**, pour Integrated Development Environment) le logiciel **RStudio**. 
@@ -192,6 +224,7 @@ Si l'on exécute plusieurs lignes de commandes dans la console, on peut "récup�
 ]
 
 ---
+name: assignation
 # Assignation
 
 .pull-left[
@@ -260,6 +293,7 @@ ls()
 ]
 
 ---
+name: afficher-objet
 # Affichage des objets
 
 .pull-left[
@@ -296,6 +330,7 @@ Il y a en fait une multitude de types d'objets possibles dans R. Ici nous allons
 - les **tableaux de données**
 
 ---
+name: creer-vecteur
 # Création de vecteurs
 
 On appelle **vecteur** toute **séquence d'éléments** de même type, par exemple: 
@@ -360,6 +395,7 @@ v7
 ```
 ]
 ---
+name: classes-objets
 # Classes des objets
 
 .pull-left[
@@ -411,7 +447,7 @@ vessai
 
 R ne renvoie pas de message d'erreur, mais fait en sorte que toutes les valeurs de vessai soient d'un même type (des chaînes de caractère ici: voyez les guillemets autour des valeurs de `v5`).
 ---
-
+name: valeurs-manquantes
 # Valeurs manquantes
 
 Il peut arriver que certaines valeurs d'un objet soient **non renseignées**. En R, ces valeurs s'écrivent `NA` (pour **N**ot **A**vailable).
@@ -423,6 +459,7 @@ v8 <- c(3.2, NA, 8.9, 42.3, 59.2, NA)
 ```
 
 ---
+name: creer-facteur
 #  Création de facteurs
 
 Les facteurs ressemblent généralement à des vecteurs de mode caractère, à la nuance près qu'ils comprennent généralement plusieurs **niveaux** (`levels`), c'est-à-dire un ensemble fini de modalités possibles :
@@ -436,6 +473,7 @@ levels(f1)
 La nuance entre vecteurs et facteurs est importante pour un certain nombre de fonctions implémentées dans R, il est donc assez souvent nécessaire de convertir les vecteurs en facteurs et inversement.
 
 ---
+name: creer-tableaux
 # Création d'objets: tableaux de données
 
 Un tableau de données, ou `data.frame`, compte **plusieurs lignes et colonnes**.
@@ -467,7 +505,7 @@ t1
 
 
 ---
-
+name: conversion-objets
 # Création d'objets, conversion d'objets
 
 Pour interroger R quant au type (vecteur, facteur, tableau, matrice, etc.) ou au mode (numérique, caractère, logique, etc.) d'un objet, on utilise les fonctions de type `is.___`. 
@@ -494,6 +532,7 @@ v6f
 convertit le vecteur v6 en facteur pour créer `v6f`.
 
 ---
+name: indexation-objets
 # Indexation d'un vecteur ou d'un facteur
 
 On peut s'intéresser à une partie d'un objet, par exemple un ou plusieurs éléments d'un vecteur ou d'un facteur.
@@ -580,7 +619,7 @@ df$Z
 ```
 
 ---
-
+name: operateurs-arithmetiques
 # Opérateurs arithmétiques
 
 Ils permettent d'effectuer des opérations arithmétiques simples, comme des additions, des multiplications,etc.
@@ -598,6 +637,7 @@ v1^2 # puissance
 ```
 ]
 ---
+name: operateurs-comparaison
 # Opérateurs de comparaison
 
 Ils permettent de **comparer** des vecteurs entre eux.
@@ -626,6 +666,7 @@ v0 >= 3 # plus grand ou égal
 ]
 ]
 ---
+name: operateurs-logiques
 # Opérateurs logiques
 
 Ils permettent de **vérifier si une proposition est vraie** ou non.
@@ -656,6 +697,7 @@ is.na(v9)
 
 
 ---
+name: structure-donnees
 # Description des variables: Structure des données
 
 Dans R, un ensemble de fonctions permet d'afficher la **structure**, le **type**, le **contenu** ou encore les **dimensions** d'un objet
@@ -695,6 +737,7 @@ unique(df$Z)
 ![](img/RStudio_str_variables.png)
 
 ---
+name: afficher-tableau
 # Description des variables: Structure des données
 
 - Et pour les `data.frame`, à la fonction `View()`, qui affiche un tableau interactif dans l'interface :
@@ -706,6 +749,7 @@ View(df)
 ![:scale 65%](img/RStudio_View_df.png)
 ]
 ---
+name: indicateurs-stats
 # Description des variables: Indicateurs statistiques
 
 Soit `x` une variable aléatoire suivant une loi normale (`rnorm`) d'espérance (`mean`) 10 et d'écart-type (`sd`) 3 
@@ -799,6 +843,7 @@ tail(df) # 5 dernières lignes
 ]
 ]
 ---
+name: fonctions
 # Fonctions: remarques
 
 .pull-left[
@@ -863,6 +908,7 @@ help(quantile)
 
 ]
 ---
+name: packages
 # Packages
 
 Les packages sont des **paquets de fonctions** visant à réaliser des tâches un peu particulières. L'installation de base de R vous installe, par défaut, un certain nombre de packages (`base`, `methods`, `stats`, `graphics`, etc.)

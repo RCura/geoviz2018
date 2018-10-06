@@ -25,7 +25,40 @@ library(knitr)
 opts_chunk$set(cache = TRUE,
                cache.lazy = FALSE)
 ```
+## Sommaire
+.pull-left[
+Entrées / sorties
+- [Charger un tableau](#lecture-table)
+- [Enregistrer un tableau](#enregistrer-tableau)
+- [Le tidyverse, un ensemble de packages pour la manipulation de tableaux](#tidyverse)
+- [Organiser l'enchaînement des opérations avec les *pipes*](#pipes)
 
+[Manipulation de données](#manipulation-donnees)
+- [Sélection de variables](#select)
+- [Filtrage de lignes](#filter)
+- [Tri d'un tableau](#arrange)
+]
+
+.pull-right[
+[Modifier un tableau](#modification-tableau)
+- [Renommage de variables](#rename)
+- [Création/modification de variables](#mutate)
+- [Modifications conditionelles](#ifelse)
+- [Agrégations de données](#agregation)
+- [Jointures de données](#jointures)
+- [Restructuer un tableau](#restructurer-tableau)
+- [Diviser des colonnes](#separate)
+- [Compléter des données](#complete)
+
+Autre :
+- [Un exercice complet d'application](#exercice)
+- [Trouver de la documentation](#supports)
+]
+
+
+
+---
+name: lecture-table
 ## Lecture de tables : `readr`
 
 - RStudio dispose d'un outil graphique pour importer des données :
@@ -123,6 +156,8 @@ df_dmr
 ]
 
 ---
+name: manipulation-donnees
+
 ## Manipuler des données avec `dplyr`
 
 - Avant de vouloir modifier le jeu de données chargé, voyons déjà comment manipuler son contenu
@@ -137,6 +172,7 @@ library(dplyr)
 ```
 
 ---
+name: select
 ## dplyr: select()
 
 .center[
@@ -236,6 +272,7 @@ select(df_dmr, contains("TYPE"))
 ```
 ]
 ---
+name: filter
 ## dplyr: filter()
 .center[
 ![:scale 40%](img/dplyr_filter.png)
@@ -300,6 +337,7 @@ filter(df_dmr, CODE_POSTAL %in% c(75006, 75008))
 ```
 ]
 ---
+name: arrange
 ## dplyr: arrange()
 .center[
 ![:scale 40%](img/dplyr_arrange.png)
@@ -369,6 +407,7 @@ arrange(df_dmr, desc(CODE_POSTAL), TYPE)
 ]
 ]
 ---
+name: pipes
 ## Enchaîner des opérations
 
 Si on veut ré-organiser un tableau avec plusieurs opérations, on peut procéder de plusieurs manières :
@@ -460,6 +499,7 @@ tableau_reorganise <- df_dmr %>%
 **N.B** : Attention, le premier argument des fonctions (le tableau) est ici implicitement communiqué par le **pipe**
 
 ---
+name: modification-tableau
 ## Modifier un tableau de données avec `dplyr`
 
 Ré-organiser des données ne suffit généralement pas pour les adapter à une représentation, il faut alors **modifier le tableau de données** en entrée :
@@ -471,6 +511,8 @@ Ré-organiser des données ne suffit généralement pas pour les adapter à une 
 - #### `left_join()`, `inner_join()` etc. permettent de réaliser des **jointures**
 
 ---
+name: rename
+
 ## Renommer des colonnes avec `rename`
 
 Pour simplifier ou modifier des noms de colonnes :
@@ -546,6 +588,7 @@ colnames(df_dmr_renamed)
 ]
 
 ---
+name: mutate
 ## Créer et modifier des colonnes avec `mutate`
 .center[
 ![:scale 40%](img/dplyr_mutate.png)
@@ -613,6 +656,7 @@ df_dmr_renamed_muted %>%
 ]
 
 ---
+name: agregation
 # Résumer avec `group_by` et `summarise`
 .center[
 ![:scale 40%](img/dplyr_summarise.png)
@@ -672,6 +716,7 @@ df_dmr_renamed_muted %>%
 ]
 
 ---
+name: jointures
 ## Les jointures
 
 `dplyr` simplifie la réalisation de jointures entre des tableaux, en suivant une syntaxe proche du `SQL`. Les fonctions les plus utiles sont :
@@ -722,20 +767,12 @@ df_dmr_renamed_muted %>%
 .center[
 ![:scale 60%](https://raw.githubusercontent.com/gadenbuie/tidy-animated-verbs/master/images/inner-join.gif)
 ]
-  
----
-## `inner_join()`  
-  
 ---
 ## `semi_join()`
 
 .center[
 ![:scale 60%](https://raw.githubusercontent.com/gadenbuie/tidy-animated-verbs/master/images/inner-join.gif)
 ]
-  
-  
----
-## `semi_join()`
 
 ---
 ## `union()`
@@ -744,11 +781,9 @@ df_dmr_renamed_muted %>%
 ![:scale 60%](https://raw.githubusercontent.com/gadenbuie/tidy-animated-verbs/master/images/union.gif)
 ]
   
-  
+
 ---
-## `union()`
-  
----
+name: restructurer-tableau
 ## Restructurer un tableau avec `tidyr`
 
 Que ce soit pour des traitements ou pour restructurer les données en vue de leur (géo)visualisation, il est souvent utile de *passer de formats longs à des formats larges** et vice-versa
@@ -824,6 +859,7 @@ resume_annuel_large %>% gather(key = ANNEE, NbIncidents, -CODE_POSTAL) %>% head(
 -> On regroupe toutes les colonnes sauf `CODE_POSTAL`, avec une nouvelle colonne `ANNEE` qui contiendra les anciens noms de colonnes, et une colonne `NbIncidents` qui contient les valeurs qui étaient renseignées dans chaque variable d'année. 
 
 ---
+name: separate
 ## Diviser des colonnes avec `tidyr`
 
 - Le tableau de données contient une variable actuellement inexploitable : `GEO_POINT_2D`
@@ -869,6 +905,7 @@ df_dmr_spatialise %>% select(Lat, Long) %>% head()
 ]
 
 ---
+name: enregistrer-tableau
 ## Enregistrer un tableau avec `readr`
 
 Une fois les données manipulées, il faut bien sûr penser à les exporter/enregistrer.
@@ -893,6 +930,7 @@ df_dmr_spatialise <- readRDS(file = "dans_ma_rue_clean.RDS")
 ```
 
 ---
+name: tidyverse
 ## `tibble`, `readr`, `dplyr`, `tidyr` etc. : le `tidyverse`
 
 - On jongle avec de nombreux *packages* ici :
@@ -913,6 +951,7 @@ tidyverse_packages()
 
 
 ---
+name: exercice
 class: center, middle
 
 ## Récapitulatif
@@ -1015,6 +1054,8 @@ donnees_finales
 ]
 
 ---
+name: complete
+
 ## Données manquantes
 
 - Pendant certains trimestres, il n'y a pas eu d'incidents déclarés, et donc pas de lignes correspondantes.
@@ -1029,6 +1070,7 @@ donnees_finales_completes
 ```
 ]
 ---
+name: ifelse
 ## Remplacement conditionnel
 
 - Les données manquantes sont ajoutées, et remplies avec des `NA`
@@ -1050,7 +1092,6 @@ donnees_finales_completes
 
 #### Explications au prochain cours
 .small[
-.center[
 ````{r, fig.height = 3.5, fig.width = 8}
 ggplot(donnees_finales_completes) +
   geom_line(mapping = aes(x = TRIMESTRE_DECLARATION,
@@ -1060,12 +1101,10 @@ ggplot(donnees_finales_completes) +
   scale_y_continuous(labels = scales::percent)
 ```
 ]
-]
 
 ---
-
+name: supports
 ## Cheatsheets
-
 
 .pull-left[
 .center[
