@@ -658,9 +658,34 @@ evolArrdt
 ```
 ]
 
+
+---
+## Cheatsheets
+
+.pull-left[
+.center[
+![](img/cheatsheet-ggplot2-1.png)
+]
+]
+
+.pull-right[
+.center[
+![](img/cheatsheet-ggplot2-2.png)
+]
+]
+.center[
+www.rstudio.com/resources/cheatsheets/#ggplot2
+]
+
+---
+## Où trouver de la documentation/aide ?
+
+- Articles rstudio
+- Blogs ? Lesquels ?
+- Livres
+
 ---
 class: inverse, center, middle
 
 ### Un peu de pratique ! <br/>Proposer des représentations graphiques, à partir du jeu de données "Dans ma Rue", permettant de saisir l'évolution, dans le temps et dans l'espace, des signalements d'anomalies.
 
-#### Ne pas oublier de se référer à la *cheatsheet* : <span>htt</span>ps://www.rstudio.com/resources/cheatsheets/#ggplot2
