@@ -64,7 +64,7 @@ name: lecture-table
 
 - RStudio dispose d'un outil graphique pour importer des données :
 
-![](img/RStudio_data_import1.png)
+![](www/img/RStudio_data_import1.png)
 
 ---
 
@@ -72,7 +72,7 @@ name: lecture-table
 
 - RStudio dispose d'un outil graphique pour importer des données :
 .center[
-![:scale 70%](img/RStudio_data_import2.png)
+![:scale 70%](www/img/RStudio_data_import2.png)
 ]
 ---
 
@@ -177,7 +177,7 @@ name: select
 ## dplyr: select()
 
 .center[
-![:scale 40%](img/dplyr_select.png)
+![:scale 40%](www/img/dplyr_select.png)
 ]
 
 **select()** permet de **sélectionner des variables**
@@ -192,7 +192,7 @@ print(df_dmr)
 ## dplyr: select()
 
 .center[
-![:scale 40%](img/dplyr_select.png)
+![:scale 40%](www/img/dplyr_select.png)
 ]
 
 **select()** permet de **sélectionner des variables**
@@ -207,7 +207,7 @@ select(df_dmr, TYPE, SOUSTYPE, CODE_POSTAL)
 ---
 ## dplyr: select()
 .center[
-![:scale 40%](img/dplyr_select.png)
+![:scale 40%](www/img/dplyr_select.png)
 ]
 
 **select()** permet de **sélectionner des variables**
@@ -222,7 +222,7 @@ select(df_dmr, 3:7)
 ---
 ## dplyr: select()
 .center[
-![:scale 40%](img/dplyr_select.png)
+![:scale 40%](www/img/dplyr_select.png)
 ]
 
 **select()** permet de **sélectionner des variables**
@@ -237,7 +237,7 @@ select(df_dmr, -(4:7), - SOUSTYPE)
 ---
 ## dplyr: select()
 .center[
-![:scale 40%](img/dplyr_select.png)
+![:scale 40%](www/img/dplyr_select.png)
 ]
 
 **select()** permet de **sélectionner des variables**
@@ -276,7 +276,7 @@ select(df_dmr, contains("TYPE"))
 name: filter
 ## dplyr: filter()
 .center[
-![:scale 40%](img/dplyr_filter.png)
+![:scale 40%](www/img/dplyr_filter.png)
 ]
 
 **filter()** permet de **filtrer les lignes du tableau** en fonction des valeurs de telle ou telle variable.
@@ -293,7 +293,7 @@ head(df_dmr_paris6)
 ---
 ## dplyr: filter()
 .center[
-![:scale 40%](img/dplyr_filter.png)
+![:scale 40%](www/img/dplyr_filter.png)
 ]
 
 **filter()** permet de **filtrer les lignes du tableau** en fonction des valeurs de telle ou telle variable.
@@ -341,7 +341,7 @@ filter(df_dmr, CODE_POSTAL %in% c(75006, 75008))
 name: arrange
 ## dplyr: arrange()
 .center[
-![:scale 40%](img/dplyr_arrange.png)
+![:scale 40%](www/img/dplyr_arrange.png)
 ]
 
 Pour réarranger un tableau selon l'ordre d'une variable, on peut faire appel à la fonction `arrange` : 
@@ -364,7 +364,7 @@ arrange(df_dmr, CODE_POSTAL)
 ---
 ## dplyr: arrange()
 .center[
-![:scale 40%](img/dplyr_arrange.png)
+![:scale 40%](www/img/dplyr_arrange.png)
 ]
 
 On peut aussi trier un `tibble` par plusieurs variables
@@ -387,7 +387,7 @@ arrange(df_dmr, CODE_POSTAL, TYPE)
 ---
 ## dplyr: arrange()
 .center[
-![:scale 40%](img/dplyr_arrange.png)
+![:scale 40%](www/img/dplyr_arrange.png)
 ]
 
 On peut aussi trier un `tibble` par plusieurs variables, et par ordre décroissant avec `desc()`
@@ -592,7 +592,7 @@ colnames(df_dmr_renamed)
 name: mutate
 ## Créer et modifier des colonnes avec `mutate`
 .center[
-![:scale 40%](img/dplyr_mutate.png)
+![:scale 40%](www/img/dplyr_mutate.png)
 ]
 
 Pour créer de nouvelles variables et les ajouter au tableau de données on peut utiliser la fonction **mutate()**.
@@ -609,7 +609,7 @@ head(df_dmr_renamed_muted$DATE_DECLARATION)
 ---
 ## Créer et modifier des colonnes avec `mutate`
 .center[
-![:scale 40%](img/dplyr_mutate.png)
+![:scale 40%](www/img/dplyr_mutate.png)
 ]
 
 - On peut aussi modifier des variables existantes :
@@ -640,7 +640,7 @@ df_dmr_renamed_muted %>% select(3:5)
 ---
 ## Créer et modifier des colonnes avec `mutate`
 .center[
-![:scale 40%](img/dplyr_mutate.png)
+![:scale 40%](www/img/dplyr_mutate.png)
 ]
 
 - Un exemple de discrétisation d'une variable continue, ici avec la fonction `cut()`
@@ -660,7 +660,7 @@ df_dmr_renamed_muted %>%
 name: agregation
 # Résumer avec `group_by` et `summarise`
 .center[
-![:scale 40%](img/dplyr_summarise.png)
+![:scale 40%](www/img/dplyr_summarise.png)
 ]
 
 Comme dans les tableaux croisés dynamiques des tableurs, il peut être utile de résumer l'information contenue dans une colonne en fonction d'une agrégation spécifique.
@@ -670,7 +670,7 @@ Comme dans les tableaux croisés dynamiques des tableurs, il peut être utile de
 ---
 # Résumer avec `group_by` et `summarise`
 .center[
-![:scale 40%](img/dplyr_summarise.png)
+![:scale 40%](www/img/dplyr_summarise.png)
 ]
 
 - Par exemple, on peut vouloir connaître le nombre de déclarations ayant été reportées chaque année :
@@ -686,7 +686,7 @@ df_dmr_renamed_muted %>%
 ---
 # Résumer avec `group_by` et `summarise`
 .center[
-![:scale 40%](img/dplyr_summarise.png)
+![:scale 40%](www/img/dplyr_summarise.png)
 ]
 - On peut mener cette agrégation en fonction de plusieurs variables
 .small[
@@ -701,7 +701,7 @@ df_dmr_renamed_muted %>%
 ---
 # Résumer avec `group_by` et `summarise`
 .center[
-![:scale 40%](img/dplyr_summarise.png)
+![:scale 40%](www/img/dplyr_summarise.png)
 ]
 - On peut aussi créer plusieurs résumés statistiques, et les enchaîner :
 .small[
@@ -1109,13 +1109,13 @@ name: supports
 
 .pull-left[
 .center[
-![](img/dplyr_cheatsheet_1.png)
+![](www/img/dplyr_cheatsheet_1.png)
 ]
 ]
 
 .pull-right[
 .center[
-![](img/dplyr_cheatsheet_2.png)
+![](www/img/dplyr_cheatsheet_2.png)
 ]
 ]
 .center[

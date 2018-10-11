@@ -88,7 +88,7 @@ iris_Paris_sp <- readOGR("data/IRIS_Paris_L93.shp",
 ```
 ]
 
-![](img/spatial_str_sp.png)
+![](www/img/spatial_str_sp.png)
 ]
 
 .pull-right[
@@ -137,7 +137,7 @@ name: objets-sf
 
 .small[
 .center[
-![:scale 60%](img/sf-classes.png)
+![:scale 60%](www/img/sf-classes.png)
 
 R. Lovelace, J. Nowosad & J. Muenchow (2018), Geocomputation with R - https://geocompr.robinlovelace.net/
 ]

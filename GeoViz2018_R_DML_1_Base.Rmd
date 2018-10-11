@@ -97,7 +97,7 @@ Il peut donc remplir les fonctions
 
 
 .pull-right[
-![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](img/logiciels.png)
+![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](www/img/logiciels.png)
 ]
 
 
@@ -113,7 +113,7 @@ name: rstudio
 
 - Il est lui aussi **libre et gratuit** et peut être téléchargé à l'adresse suivante: http://www.rstudio.com/ide/. 
 
-![:scale 90%](img/RStudio_raw.png)
+![:scale 90%](www/img/RStudio_raw.png)
 ---
 
 # RStudio: Fonctionnalités
@@ -128,7 +128,7 @@ Dans RStudio, quatre zones apparaissent:
 ]
 
 .pull-right[
-![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](img/RStudio_raw.png)
+![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](www/img/RStudio_raw.png)
 ]
 
 ---
@@ -139,7 +139,7 @@ La zone Console de RStudio correspond en fait à l'**interpréteur R de base**..
 ]
 
 .pull-right[ 
-![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](img/RStudio_Console.png)
+![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](www/img/RStudio_Console.png)
 ]
 ---
 # RStudio: zone Source
@@ -154,7 +154,7 @@ Les calculs sont exécutés dans la zone **Console**. On peut envoyer les codes 
 ]
 
 .pull-right[ 
-![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](img/RStudio_Source.png)
+![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](www/img/RStudio_Source.png)
 ]
 
 ---
@@ -166,7 +166,7 @@ Les calculs sont exécutés dans la zone **Console**. On peut envoyer les codes 
 ]
 
 .pull-right[ 
-![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](img/RStudio_Environnement.png)
+![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](www/img/RStudio_Environnement.png)
 ]
 ---
 # RStudio: zone Files/Plots/Packages/Help
@@ -180,7 +180,7 @@ Les calculs sont exécutés dans la zone **Console**. On peut envoyer les codes 
 
 
 .pull-right[ 
-![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](img/RStudio_Files.png)
+![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](www/img/RStudio_Files.png)
 ] 
     
 
@@ -190,7 +190,7 @@ Les calculs sont exécutés dans la zone **Console**. On peut envoyer les codes 
 .pull-left[
 Au lancement de RStudio, une fenêtre (la **console**) apparaît: le symbole ">" indique que R est prêt à exécuter toute ligne de commande que nous allons lui fournir.
 
-![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](img/RStudio_Console.png)
+![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](www/img/RStudio_Console.png)
 ]
 
 .pull-right[
@@ -735,7 +735,7 @@ unique(df$Z)
 
 - 0n peut aussi se référer à l'interface graphique de RStudio :
 
-![](img/RStudio_str_variables.png)
+![](www/img/RStudio_str_variables.png)
 
 ---
 name: afficher-tableau
@@ -747,7 +747,7 @@ name: afficher-tableau
 View(df)
 ```
 .center[
-![:scale 65%](img/RStudio_View_df.png)
+![:scale 65%](www/img/RStudio_View_df.png)
 ]
 ---
 name: indicateurs-stats
@@ -901,10 +901,10 @@ help(quantile)
 ?quantile
 ```
 .pull-left[
-![](img/RStudio_help.png)
+![](www/img/RStudio_help.png)
 ]
 .pull-right[
-![](img/quantile_help_1.png)
+![](www/img/quantile_help_1.png)
 ]
 
 ]
