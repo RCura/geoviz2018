@@ -5,8 +5,8 @@ author: "Robin Cura, Hélène Mathian & Lise Vaudor<br/>d'après L. Vaudor : <u>
 date: ["15/10/2018<br/><br /> École Thématique GeoViz 2018 "]
 output:
   xaringan::moon_reader:
-    lib_dir: libs
-    css: ["xaringan-themer.css", "style.css"]
+    lib_dir: "www/libs"
+    css: ["www/xaringan-themer.css", "www/style.css"]
     nature:
         beforeInit: "macros.js"
 ---
@@ -19,7 +19,8 @@ duo(
   secondary_color = "#F97B64",
   header_font_google = google_font("Josefin Sans"),
   text_font_google   = google_font("Montserrat", "300", "300i"),
-  code_font_google   = google_font("Droid Mono")
+  code_font_google   = google_font("Droid Mono"),
+  outfile = "www/xaringan-themer.css"
 )
 library(knitr)
 opts_chunk$set(cache = TRUE,
