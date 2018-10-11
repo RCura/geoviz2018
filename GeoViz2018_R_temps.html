@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Espace et Temps avec R</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Robin Cura, Hélène Mathian &amp; Lise Vaudor" />
+    <link rel="stylesheet" href="www/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="www/style.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Espace et Temps avec R
+## 2 - Manipulation de données temporelles
+### Robin Cura, Hélène Mathian &amp; Lise Vaudor
+### 16/10/2018<br/><br /> École Thématique GeoViz 2018
+
+---
+
+
+
+## Sommaire
+
+.pull-left[
+Manipuler des données de type date-time
+- [Convertir une chaîne de caractères en date-time](#conversion-datetime)
+- [Arrondir des données date-time](#arrondi-datetime)
+- [Durées, périodes, intervalles](#durees-periodes-sequences-intervalles)
+]
+.pull-right[
+Visualiser des données temporelles
+- [Visualisation simple](#visual-simple)
+- [Visualisation d'une tendance](#visual-tendance)
+- [Visualisation de données agrégées](#visual-agregation)
+- [Visualisation d'une périodicité, d'un intervalle](#visual-periode-intervalle)
+]
+
+---
+## Manipulation de données temporelles avec R : `lubridate`
+
+Pour manipuler des données temporelles avec R, on va utiliser le package `lubridate`, qui fait partie des packages du tidyverse et comprend des fonctions.
+
+On utilisera aussi `dplyr` et `ggplot`. On peut donc charger directement le `tidyverse`...
+
+
+```r
+library(tidyverse)
+library(lubridate)
+```
+
+---
+name: conversion-datetime
+## Convertir une chaîne de caractères en date-time
+
+
+.pull-left[
+**Date**:
+
+Il suffit de préciser l'ordre des éléments à travers le nom de la fonction:
+.small[
+
+```r
+ymd("2019/04_11")
+```
+
+```
+## [1] "2019-04-11"
+```
+
+```r
+dmy("11 Avril 2019")
+```
+
+```
+## [1] "2019-04-11"
+```
+
+```r
+mdy("April 11th, 2019")
+```
+
+```
+## [1] "2019-04-11"
+```
+]
+]
+.pull-right[
+
+**Date-time**:
+Même principe!
+
+.small[
+
+```r
+ymd_hm("2019.04.11 14h37")
+```
+
+```
+## [1] "2019-04-11 14:37:00 UTC"
+```
+
+```r
+ymd_hms("20190407143752")
+```
+
+```
+## [1] "2019-04-07 14:37:52 UTC"
+```
+
+```r
+hms("14h37min52s")
+```
+
+```
+## [1] "14H 37M 52S"
+```
+]
+]
+
+---
+## Extraire un des composants d'une date-time
+.pull-left[
+
+Examinons par exemple la date-time suivante:
+
+```r
+t
+```
+
+```
+## [1] "2019-04-11 14:37:52 UTC"
+```
+On peut extraire **un des composants** de la date ou date-time à travers une série de fonctions du type `unitedetemps()`. 
+]
+.pull-right[ 
+Par exemple:
+.small[
+
+```r
+date(t)
+```
+
+```
+## [1] "2019-04-11"
+```
+
+```r
+hour(t)
+```
+
+```
+## [1] 14
+```
+
+```r
+minute(t)
+```
+
+```
+## [1] 37
+```
+
+```r
+second(t)
+```
+
+```
+## [1] 52
+```
+]
+]
+
+---
+name: arrondi-datetime
+## Arrondir une date ou date-temps
+
+.pull-left[
+Il est possible d'arrondir une date ou date-temps
+
+- vers la **valeur la plus proche** (`round_date()`)
+- vers le **haut** (`ceiling_date()`)
+- vers le **bas** (`floor_date()`)
+
+
+
+
+```r
+t
+```
+
+```
+## [1] "2019-04-11 14:37:52 UTC"
+```
+
+```r
+round_date(t,"hour")
+```
+
+```
+## [1] "2019-04-11 15:00:00 UTC"
+```
+]
+.pull-right[
+
+On peut arrondir à l'**unité** de son choix 
+- `second`, `minute`, ou `hour`,
+- `day`, `month`, ou `year`
+- ou encore: `week`, `bimonth`, `quarter`, `season`, et `halfyear`
+
+
+```r
+round_date(t,"day")
+```
+
+```
+## [1] "2019-04-12 UTC"
+```
+
+```r
+round_date(t,"year")
+```
+
+```
+## [1] "2019-01-01 UTC"
+```
+]
+
+---
+name: durees-periodes-sequences-intervalles
+## Calculer des durées ou périodes
+
+.pull-left[
+
+```r
+t1 &lt;- dmy("17/07/2018")
+t2 &lt;- dmy("17/04/2019")
+diff &lt;- t2-t1
+diff
+```
+
+```
+## Time difference of 274 days
+```
+
+`diff` correspond à une **différence** entre t1 et t2. Il s'agit d'un objet de classe **difftime**
+.small[
+
+```r
+# tps "physique"
+as.duration(diff)
+```
+
+```
+## [1] "23673600s (~39.14 weeks)"
+```
+
+```r
+# tps "social"
+as.period(diff) 
+```
+
+```
+## [1] "274d 0H 0M 0S"
+```
+]
+]
+.pull-right[
+
+- **durées**: `dxxx()` (par exemple `ddays()` ou `dyears()`) .small[
+
+```r
+t1+dyears(10)
+```
+
+```
+## [1] "2028-07-14"
+```
+]
+- **périodes**: fonctions `xxx()` (par exemple `days()` ou `months()`)
+.small[
+
+```r
+t1+years(10)
+```
+
+```
+## [1] "2028-07-17"
+```
+]
+]
+
+---
+## Créer des séquences et intervalles de temps
+
+Création de séquences à travers les commandes: 
+
+- `dxxx(seq(...,...,...))`
+- `xxx(seq(...,...,...))`
+
+.small[
+
+
+
+```r
+t0
+```
+
+```
+## [1] "2018-01-01 UTC"
+```
+
+```r
+t0+dminutes(seq(0,45,by=15))
+```
+
+```
+## [1] "2018-01-01 00:00:00 UTC" "2018-01-01 00:15:00 UTC"
+## [3] "2018-01-01 00:30:00 UTC" "2018-01-01 00:45:00 UTC"
+```
+]
+
+Création d'**intervalles**:
+
+.small[
+
+```r
+itv &lt;- interval(t0+dminutes(seq(0,45,by=15)),
+                t0+dminutes(seq(0,45,by=15)))
+# commande equivalente: ...%--%...
+```
+]
+
+---
+## Déterminer l'occurrence d'un événement dans un intervalle
+
+Disposer d'un intervalle, cela permet de réaliser certaines opérations, comme (par exemple) déterminer si une date-time donnée **fait partie de l'intervalle**:
+
+
+```r
+itv
+```
+
+```
+## [1] 2018-01-01 00:00:00 UTC--2018-01-01 00:00:00 UTC
+## [2] 2018-01-01 00:15:00 UTC--2018-01-01 00:15:00 UTC
+## [3] 2018-01-01 00:30:00 UTC--2018-01-01 00:30:00 UTC
+## [4] 2018-01-01 00:45:00 UTC--2018-01-01 00:45:00 UTC
+```
+
+
+
+
+```r
+t
+```
+
+```
+## [1] "2018-01-01 00:17:45 UTC"
+```
+
+```r
+t %within% itv
+```
+
+```
+## [1] FALSE FALSE FALSE FALSE
+```
+
+---
+name: visual-simple
+## Visualiser une série temporelle
+
+.small[
+
+```r
+df_dmr &lt;- readRDS("dans_ma_rue_clean.RDS")
+df_dmr_parjour  &lt;- df_dmr  %&gt;% 
+* group_by(DATEDECL) %&gt;%
+* summarise(NBDECL=n())
+
+ggplot(df_dmr_parjour, aes(x=DATEDECL, NBDECL))+
+  geom_line()
+```
+
+![](GeoViz2018_R_temps_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+]
+
+---
+name: visual-tendance
+## Visualiser une tendance
+
+
+```r
+ggplot(df_dmr_parjour,aes(x=DATEDECL, y=NBDECL))+
+  geom_line()+
+* geom_smooth(span=0.1)
+```
+
+![](GeoViz2018_R_temps_files/figure-html/unnamed-chunk-21-1.png)&lt;!-- --&gt;
+
+Ici il s'agit simplement d'une **régression non-paramétrique** =&gt; Il est difficile de définir exactement la "tendance centrale".
+
+---
+## Visualiser une tendance
+
+Pour visualiser une tendance il est également possible de représenter une **moyenne mobile** (moyenne ou autre métrique):
+
+
+```r
+library(zoo)
+df_dmr_parjour &lt;-df_dmr_parjour %&gt;% 
+*        mutate(movavNBDECL=rollapply(NBDECL,15,mean,fill=NA))
+ggplot(df_dmr_parjour, aes(x=DATEDECL, y=NBDECL))+
+  geom_line()+
+* geom_line(aes(y=movavNBDECL), col="steelblue", size=1)
+```
+
+![](GeoViz2018_R_temps_files/figure-html/unnamed-chunk-22-1.png)&lt;!-- --&gt;
+
+---
+name: visual-agregation
+## Agréger la donnée temporelle
+
+Par exemple, ici, on **agrège** la donnée par **semaine**.
+
+
+```r
+df_dmr_parsemaine &lt;- df_dmr %&gt;%
+         mutate(SEMAINE=round_date(DATEDECL,"week")) %&gt;% 
+*        group_by(SEMAINE) %&gt;%
+*        summarise(NBDECL=n())
+```
+
+La représentation des données s'en trouve de fait **moins bruitée**:
+
+
+```r
+ggplot(df_dmr_parsemaine, aes(x=SEMAINE, y=NBDECL)) +
+  geom_line()
+```
+
+![](GeoViz2018_R_temps_files/figure-html/unnamed-chunk-24-1.png)&lt;!-- --&gt;
+
+
+---
+name: visual-periode-intervalle
+## Visualiser une périodicité
+
+.pull-left[
+Par exemple, pour considérer la périodicité du signal sur une semaine, on peut récupérer le **jour de la semaine** avec la fonction `wday()`.
+.small[
+
+```r
+df_dmr_joursemaine=df_dmr %&gt;% 
+* mutate(JOURSEMAINE=wday(DATEDECL,label=TRUE))
+```
+]
+]
+.pull-right[
+On peut alors représenter le **nombre total de déclarations d'incidents en fonction du jour de la semaine**:
+
+
+```r
+ggplot(df_dmr_joursemaine,
+       aes(x=JOURSEMAINE))+
+  geom_bar()
+```
+
+![](GeoViz2018_R_temps_files/figure-html/unnamed-chunk-26-1.png)&lt;!-- --&gt;
+]
+
+---
+## Visualiser des intervalles particuliers
+
+.small[
+
+```r
+vacances &lt;- readr::read_csv("data/vacances.csv") %&gt;% 
+* mutate(Debut=as_datetime(dmy(Fin_des_cours)),
+*        Fin=as_datetime(dmy(Reprise_des_cours)))
+
+ggplot(df_dmr_parjour,
+            aes(x=DATEDECL, y=NBDECL))+
+* geom_rect(data=vacances,inherit.aes=FALSE,
+*           aes(xmin=Debut, xmax=Fin,
+*               ymin=-Inf,ymax=+Inf),
+*           alpha=0.5, fill="lightyellow") +
+  geom_line()+
+  geom_line(aes(y=movavNBDECL), col="steelblue", size=1)
+```
+
+![](GeoViz2018_R_temps_files/figure-html/unnamed-chunk-27-1.png)&lt;!-- --&gt;
+]
+
+
+---
+## Voir aussi
+
+Manipulation de séries temporelles avec R : `tibbletime` --&gt;
+
+https://github.com/business-science/tibbletime
+
+Agrégation de séries temporelles avec R : `tsibble`
+
+https://github.com/tidyverts/tsibble
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="www/macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

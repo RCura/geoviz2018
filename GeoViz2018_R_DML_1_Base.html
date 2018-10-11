@@ -1,0 +1,1635 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Manipulation de données avec R</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Robin Cura &amp; Lise Vaudor d’après L. Vaudor : Formation startR (2018)" />
+    <link rel="stylesheet" href="www/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="www/style.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Manipulation de données avec R
+## 1 - Fondamentaux
+### Robin Cura &amp; Lise Vaudor<br/>d’après L. Vaudor : <u><a href='http://perso.ens-lyon.fr/lise.vaudor/formations/'>Formation startR (2018)</a></u>
+### 15/10/2018<br/><br /> École Thématique GeoViz 2018
+
+---
+
+
+## Sommaire
+.pull-left[
+Environnement R
+- [Organisation de RStudio](#rstudio)
+- [Assignation de variables](#assignation)
+- [Afficher un objet](#afficher-objet)
+- [Les classes d'objets](#classes-objets)
+- [Les fonctions](#fonctions)
+- [Les packages](#packages)
+
+Les opérateurs
+- [Opérateurs arithmétiques](#operateurs-arithmetiques)
+- [Opérateurs de comparaison](#operateurs-comparaison)
+- [Opérateurs logiques](#operateurs-logiques)
+- [Indicateurs statistiques](#indicateurs-stats)
+]
+
+.pull-right[
+Manipuler des vecteurs
+- [Créer un vecteur](#creer-vecteur)
+- [Créer un facteur](#creer-facteur)
+- [Conversion de vecteurs](#conversion-objets)
+- [Les valeurs manquantes](#valeurs-manquantes)
+
+Manipuler des tableaux
+- [Créer des tableaux](#creer-tableaux)
+- [Indexation en R](#indexation-objets)
+- [Les structures de données](#structure-donnees)
+- [Afficher un tableau](#afficher-tableau)
+]
+
+---
+# Pourquoi utiliser le logiciel R?
+
+.pull-left[
+Le langage R est un **langage de programmation** et un **environnement mathématique** utilisé pour le **traitement de données** et l'**analyse statistique**.
+
+Il est en outre d'utilisation **libre** et **gratuite** et peut être téléchargé par exemple à l'adresse suivante: http://cran.r-project.org/
+
+L'installation prend au plus quelques minutes.
+
+]
+
+.pull-right[
+Il permet de réaliser
+
+- des **calculs arithmétiques** 
+- de la **manipulation de données** 
+- une très large variété de **graphiques** 
+- des **scripts** (automatisation de traitements)
+- de la **modélisation** et des **simulations numériques**
+- une très large variété de **traitements statistiques** (c'est ce pour quoi il est le plus reconnu)
+- des **rapports**, **pages web**, **aplications interactives** et **diaporamas**
+]
+
+---
+# Pourquoi utiliser le logiciel R?
+
+.pull-left[
+Il peut donc remplir les fonctions 
+
+- d'une **calculatrice**, 
+- d'un **tableur**, 
+- d'un **langage de programmation**, 
+- d'un **logiciel de statistiques**,
+- d'un **logiciel de dessin** 
+- d'un **éditeur de rapports et de présentations**...
+]
+
+
+.pull-right[
+![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](img/logiciels.png)
+]
+
+
+En contrepartie de sa polyvalence et de sa flexibilité, R peut être un peu déroutant au premier abord, car il ne s'agit pas d'un logiciel "clic-boutons": on exécute les différentes opérations à travers l'exécution de **lignes de commande**.
+
+- Pour simplifier l'usage de ce langage, on le mobilise au sein d'un **IDE** adapté : **RStudio**
+
+---
+name: rstudio
+# RStudio
+
+- Nous allons travailler sur un éditeur de script (ou plus précisément un **IDE**, pour Integrated Development Environment) le logiciel **RStudio**. 
+
+- Il est lui aussi **libre et gratuit** et peut être téléchargé à l'adresse suivante: http://www.rstudio.com/ide/. 
+
+![:scale 90%](img/RStudio_raw.png)
+---
+
+# RStudio: Fonctionnalités
+
+.pull-left[
+Dans RStudio, quatre zones apparaissent:
+
+- **Source** en haut à gauche,
+- **Console** en bas à gauche, 
+- **Environnement** en haut à droite
+- **Plots** en bas à droite
+]
+
+.pull-right[
+![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](img/RStudio_raw.png)
+]
+
+---
+# RStudio: zone Console
+
+.pull-left[
+La zone Console de RStudio correspond en fait à l'**interpréteur R de base**... C'est cette console qui s'ouvre quand vous lancez R (sans RStudio)... Simplement ici, la console est "enrobée" de différents outils pour vous aider à travailler...
+]
+
+.pull-right[ 
+![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](img/RStudio_Console.png)
+]
+---
+# RStudio: zone Source
+
+.pull-left[
+La zone **Source** constitue l'éditeur de code à proprement parler. C'est dans cette zone que vous allez écrire vos scripts. 
+
+Les calculs sont exécutés dans la zone **Console**. On peut envoyer les codes de la zone "Source" vers la zone "Console"
+
+- grâce au bouton **Run** (qui exécute la ou les lignes de commande sélectionnée(s)) 
+- grâce au bouton **Source** (qui exécute l'ensemble des lignes de commande du script). 
+]
+
+.pull-right[ 
+![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](img/RStudio_Source.png)
+]
+
+---
+# RStudio: zone Environment/History
+
+.pull-left[
+- onglet **Environment**: il vous permet de consulter l'ensemble des objets de votre environnement
+- onglet **History**: il vous permet de consulter l'historique de vos commandes (i.e. l'ensemble des commandes que vous avez exécutées depuis le lancement de votre session).
+]
+
+.pull-right[ 
+![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](img/RStudio_Environnement.png)
+]
+---
+# RStudio: zone Files/Plots/Packages/Help
+
+.pull-left[
+- onglet **Files**: il vous permet de naviguer dans vos dossiers et d'ouvrirs/renommer/supprimer vos fichiers.
+- onglet **Plots**: c'est là que s'afficheront (par défaut) les graphiques produits. Il vous permet donc de vérifier d'un coup d'oeil vos sorties graphiques... 
+- onglet **Packages**: vous montre l'ensemble des packages installés et chargés pour la session actuelle.
+- onglet **Help**: vous pouvez y consulter les fichiers d'aide associés aux différentes fonctions de R.
+]
+
+
+.pull-right[ 
+![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](img/RStudio_Files.png)
+] 
+    
+
+---
+# Console, commandes
+
+.pull-left[
+Au lancement de RStudio, une fenêtre (la **console**) apparaît: le symbole "&gt;" indique que R est prêt à exécuter toute ligne de commande que nous allons lui fournir.
+
+![Aperçu de RStudio et de quelques-unes de ses fonctionnalités.](img/RStudio_Console.png)
+]
+
+.pull-right[
+Un exemple de **ligne de commande**:
+
+
+```r
+2+2
+```
+
+```
+## [1] 4
+```
+
+Taper entrée pour exécuter la commande. R exécute la commande et nous affiche le résultat.
+]
+
+---
+# Commentaires, historique des commandes
+
+.pull-left[
+## Commentaires
+
+
+```r
+32.7*59.6 # multiplication
+```
+
+```
+## [1] 1948.92
+```
+
+Les indications précédées du symbole **\#** sont des **commentaires**. Ils sont ignorés par R mais vous seront très utiles pour **annoter vos scripts**.
+
+]
+
+
+.pull-right[
+## Historique
+
+Si l'on exécute plusieurs lignes de commandes dans la console, on peut "récupérer" les **lignes de commandes précédemment exécutées** avec la flèche `\(\uparrow\)` ou au contraire en récupérer de plus récentes avec `\(\downarrow\)`.
+]
+
+---
+name: assignation
+# Assignation
+
+.pull-left[
+Lorsque vous exécutez une commande, vous pouvez en observer le résultat directement dans la console:
+
+
+```r
+32.7*59.6 
+```
+
+```
+## [1] 1948.92
+```
+
+```r
+53/59 
+```
+
+```
+## [1] 0.8983051
+```
+]
+
+.pull-right[
+Vous pouvez également choisir d'attribuer ce résultat à un **objet**, qui sera référencé comme une **variable**
+
+
+```r
+a &lt;- 32.7*59.6 
+b &lt;- 53/59 
+```
+
+On dit qu'on **assigne une valeur à une variable**. On a ainsi créé les objets `a` et `b`.
+
+
+
+]
+
+---
+# Assignation
+
+**N.B.** : En R, l'assignation peut se faire avec le symbole `&lt;-` ou `=`, qui sont équivalents.
+
+
+```r
+a = 32.7*59.6 
+a &lt;- 32.7*59.6 
+```
+
+On préférera l'opérateur `&lt;-` qui est plus spécifique et donc non ambigu.
+
+- En revanche, R est **sensible à la casse** donc les deux commandes suivantes créerons deux objets distincts!
+
+
+```r
+a &lt;- 32.7*59.6 
+A &lt;- 32.7*59.6 
+```
+
+---
+# Environnement
+
+.pull-left[
+
+
+```r
+a &lt;- 32.7*59.6 
+b &lt;- 53/59 
+```
+
+Lorsque vous exécutez les commandes ci-dessus, **rien ne s'affiche dans la console**. Cela ne signifie pas pour autant que rien ne s'est passé... Vous avez **créé les objets a et b**, qui font désormais partie de votre environnement de travail... 
+
+]
+
+.pull-right[
+
+Rappelez-vous, ces objets apparaissent dans la zone **Environnement** de RStudio. Vous pouvez également afficher la liste des objets dans l'environnement global de la manière suivante:
+
+
+```r
+ls()
+```
+
+```
+## [1] "a" "A" "b"
+```
+]
+
+---
+name: afficher-objet
+# Affichage des objets
+
+.pull-left[
+Pour afficher la valeur des objets dans la console, plusieurs possibilités:
+
+
+```r
+a
+```
+
+```
+## [1] 1948.92
+```
+
+```r
+print(a)
+```
+
+```
+## [1] 1948.92
+```
+
+]
+
+.pull-right[
+Vous pourrez par la suite manipuler les objets de différentes façon... Par exemple, ici on peut les utiliser pour de simples opérations arithmétiques:
+
+
+
+```r
+a+b  # calcul puis affichage
+```
+
+```
+## [1] 1949.818
+```
+
+```r
+c &lt;- a+b # calcul et creation d'objet
+print(c) # affichage
+```
+
+```
+## [1] 1949.818
+```
+]
+
+
+---
+# Création d'objets
+
+Nous avons vu dans la section précédente **comment créer des objets très simples** et comment les **assigner à un environnement**.
+
+Il y a en fait une multitude de types d'objets possibles dans R. Ici nous allons aborder
+
+- les **vecteurs**
+- les **facteurs**
+- les **tableaux de données**
+
+---
+name: creer-vecteur
+# Création de vecteurs
+
+On appelle **vecteur** toute **séquence d'éléments** de même type, par exemple: 
+
+
+.pull-left[
+
+v1 = {2.3, 3.6, 1.1, 2.4} 
+ 
+v2 = {"Paris", "Lyon", "Rennes"}
+
+ou v3 = {TRUE, FALSE, FALSE}
+]
+
+.pull-right[
+En R, ces vecteurs s'écrivent: 
+
+
+```r
+v1 &lt;- c(2.3, 3.6, 1.1, 2.4)
+v1
+```
+
+```
+## [1] 2.3 3.6 1.1 2.4
+```
+
+```r
+v2 &lt;- c("Paris", "Lyon", "Rennes")
+v2
+```
+
+```
+## [1] "Paris"  "Lyon"   "Rennes"
+```
+
+```r
+v3 &lt;- c(TRUE, FALSE, FALSE)
+v3
+```
+
+```
+## [1]  TRUE FALSE FALSE
+```
+]
+
+---
+# Création de vecteurs
+
+On peut également créer des vecteurs correspondant à: 
+
+
+.pull-left[
+- des **séquences de valeurs régulièrement espacées**
+
+
+
+```r
+# valeurs de 0 à 6
+# par pas de 2
+v4 &lt;- seq(from = 0,
+          to = 6,
+          by = 2)
+v4
+```
+
+```
+## [1] 0 2 4 6
+```
+
+```r
+# nombres entiers de 0 a 3
+v5 &lt;- 0:3
+v5
+```
+
+```
+## [1] 0 1 2 3
+```
+]
+.pull-right[
+- des **séquences de valeurs répétées**
+
+
+```r
+# repetition de "date1" : 
+# 2 fois
+v6&lt;-rep("date1", 2)
+v6
+```
+
+```
+## [1] "date1" "date1"
+```
+
+```r
+# repetition du vecteur v6 :
+# 2 fois
+v7&lt;-rep(v6, 2)
+v7
+```
+
+```
+## [1] "date1" "date1" "date1" "date1"
+```
+]
+---
+name: classes-objets
+# Classes des objets
+
+.pull-left[
+Les vecteurs peuvent être de classes différentes selon le type de valeurs qu'ils contiennent (mais toutes les valeurs d'un vecteur doivent être d'un même type). 
+
+
+Ils peuvent par exemple être de mode
+
+- **numérique** 
+- **caractère** 
+- **logique**/**booléen**, c'est à dire que les valeurs qu'ils contiennent sont de type vrai / faux (`TRUE` / `FALSE`).
+]
+.pull-right[
+
+Par exemple, pour v1, v2, et v3:
+
+
+```r
+v1 &lt;- c(2.3,3.6,1.1,2.4,2.5,10.2,5.1,2.0)
+class(v1)
+```
+
+```
+## [1] "numeric"
+```
+
+```r
+v2 &lt;- c("Paris","Lyon","Marseille","Rennes","Montpellier")
+class(v2)
+```
+
+```
+## [1] "character"
+```
+
+```r
+v3 &lt;- c(TRUE,FALSE,FALSE,TRUE,TRUE)
+class(v3)
+```
+
+```
+## [1] "logical"
+```
+]
+---
+# Création de vecteurs
+
+Remarquez que l'on peut aussi utiliser `c()` pour combiner plusieurs vecteurs:
+
+
+```r
+v4
+```
+
+```
+## [1] 0 2 4 6
+```
+
+```r
+v5
+```
+
+```
+## [1] 0 1 2 3
+```
+
+```r
+vglobal &lt;- c(v4,v5)
+vglobal
+```
+
+```
+## [1] 0 2 4 6 0 1 2 3
+```
+---
+
+# Création de vecteurs
+
+Si l'on tente quelque chose comme 
+
+
+```r
+v5
+```
+
+```
+## [1] 0 1 2 3
+```
+
+```r
+v6
+```
+
+```
+## [1] "date1" "date1"
+```
+
+```r
+vessai &lt;- c(v5,v6)
+vessai
+```
+
+```
+## [1] "0"     "1"     "2"     "3"     "date1" "date1"
+```
+
+R ne renvoie pas de message d'erreur, mais fait en sorte que toutes les valeurs de vessai soient d'un même type (des chaînes de caractère ici: voyez les guillemets autour des valeurs de `v5`).
+---
+name: valeurs-manquantes
+# Valeurs manquantes
+
+Il peut arriver que certaines valeurs d'un objet soient **non renseignées**. En R, ces valeurs s'écrivent `NA` (pour **N**ot **A**vailable).
+
+Par exemple:
+
+
+```r
+v8 &lt;- c(3.2, NA, 8.9, 42.3, 59.2, NA)
+```
+
+---
+name: creer-facteur
+#  Création de facteurs
+
+Les facteurs ressemblent généralement à des vecteurs de mode caractère, à la nuance près qu'ils comprennent généralement plusieurs **niveaux** (`levels`), c'est-à-dire un ensemble fini de modalités possibles :
+
+
+```r
+f1 &lt;- factor(c("val1", "val2", "val3", "val2", "val2", "val3"))
+f1
+```
+
+```
+## [1] val1 val2 val3 val2 val2 val3
+## Levels: val1 val2 val3
+```
+
+```r
+levels(f1)
+```
+
+```
+## [1] "val1" "val2" "val3"
+```
+
+La nuance entre vecteurs et facteurs est importante pour un certain nombre de fonctions implémentées dans R, il est donc assez souvent nécessaire de convertir les vecteurs en facteurs et inversement.
+
+---
+name: creer-tableaux
+# Création d'objets: tableaux de données
+
+Un tableau de données, ou `data.frame`, compte **plusieurs lignes et colonnes**.
+Les colonnes (ou **variables**) d'un tableau de données **peuvent être de types différents**, et sont **nommées**.
+Au sein d'une colonne, toutes les valeurs doivent être de même type.
+
+|Espece|Nom|Date|Parle|
+|------|---|---|---|
+|Chien|Lassie|1940|Non|
+|Dauphin|Flipper|1964|Non|
+|Chat|Garfield|1978|Oui|
+|Eponge|Bob|1999|Oui|
+]
+
+---
+# Création d'objets: tableaux de données
+
+Voici comment créer un tableau de données (`data.frame`) sous R, en assemblant plusieurs vecteurs de même taille:
+
+
+```r
+Espece &lt;- c("Chien", "Dauphin", "Chat", "Eponge")
+Nom &lt;- c("Lassie", "Flipper", "Garfield", "Bob")
+Date &lt;- c(1940, 1964, 1978, 1999)
+Parle &lt;- c(FALSE, FALSE, TRUE, TRUE)
+t1 &lt;- data.frame(Espece, Nom, Date, Parle)
+t1
+```
+
+```
+##    Espece      Nom Date Parle
+## 1   Chien   Lassie 1940 FALSE
+## 2 Dauphin  Flipper 1964 FALSE
+## 3    Chat Garfield 1978  TRUE
+## 4  Eponge      Bob 1999  TRUE
+```
+
+
+
+---
+name: conversion-objets
+# Création d'objets, conversion d'objets
+
+Pour interroger R quant au type (vecteur, facteur, tableau, matrice, etc.) ou au mode (numérique, caractère, logique, etc.) d'un objet, on utilise les fonctions de type `is.___`. 
+
+Par exemple:
+
+
+```r
+v6
+```
+
+```
+## [1] "date1" "date1"
+```
+
+```r
+is.factor(v6)
+```
+
+```
+## [1] FALSE
+```
+
+```r
+is.character(v6)
+```
+
+```
+## [1] TRUE
+```
+
+---
+
+# Création d'objets, conversion d'objets
+
+On peut convertir un objet d'un type ou mode à un autre en utilisant les fonctions de type `as.___`. Par exemple,
+
+
+```r
+v6f &lt;- as.factor(v6)
+v6f
+```
+
+```
+## [1] date1 date1
+## Levels: date1
+```
+
+convertit le vecteur v6 en facteur pour créer `v6f`.
+
+---
+name: indexation-objets
+# Indexation d'un vecteur ou d'un facteur
+
+On peut s'intéresser à une partie d'un objet, par exemple un ou plusieurs éléments d'un vecteur ou d'un facteur.
+
+On a accès au `\(i^{eme}\)` élément d'un vecteur/facteur par la commande: `v[i]`
+
+Par exemple:
+
+```r
+v2
+```
+
+```
+## [1] "Paris"       "Lyon"        "Marseille"   "Rennes"      "Montpellier"
+```
+
+```r
+v2[4]
+```
+
+```
+## [1] "Rennes"
+```
+---
+# Indexation d'un vecteur ou d'un facteur
+
+On peut s'intéresser à une partie d'un objet, par exemple un ou plusieurs éléments d'un vecteur ou d'un facteur.
+
+On a accès au `\(i^{eme}\)` élément d'un vecteur/facteur par la commande: `v[i]`
+
+Par exemple:
+
+```r
+v2[1:3]  # les trois premières valeurs
+```
+
+```
+## [1] "Paris"     "Lyon"      "Marseille"
+```
+
+```r
+v2[c(2,4,5)] # les valeurs 2, 4 et 5
+```
+
+```
+## [1] "Lyon"        "Rennes"      "Montpellier"
+```
+
+---
+class: center, middle
+
+# ** Attention !** : dans R, l'indexation commence à `1` et non pas à `0`.
+
+---
+# Indexation d'un vecteur ou d'un facteur
+
+Pour un facteur:
+
+```r
+f1
+```
+
+```
+## [1] val1 val2 val3 val2 val2 val3
+## Levels: val1 val2 val3
+```
+
+```r
+f1[3:4]
+```
+
+```
+## [1] val3 val2
+## Levels: val1 val2 val3
+```
+Remarquez que dans les éléments n° 3 et 4 du facteur `f1`, il n'y a que la valeur "date1". Cependant, "date2" fait toujours partie des niveaux possibles de ce facteur!
+---
+# Indexation d'un tableau
+
+Si l'on s'intéresse à l'élément d'un `data.frame` `"df"` qui se situe sur la `\(i^{eme}\)` ligne et sur la `\(j^{eme}\)` colonne, on y accède par: `df[i,j]`
+
+
+```r
+df &lt;- data.frame(X = c(1:3),
+                 Y = c(10:12),
+                 Z = c("a", "b", "c"),
+                 stringsAsFactors = FALSE)
+df
+```
+
+```
+##   X  Y Z
+## 1 1 10 a
+## 2 2 11 b
+## 3 3 12 c
+```
+---
+# Indexation d'un tableau
+
+Si l'on s'intéresse à l'élément d'un `data.frame` `"df"` qui se situe sur la `\(i^{eme}\)` ligne et sur la `\(j^{eme}\)` colonne, on y accède par: `df[i,j]`
+
+
+```r
+df[1,3] # la valeur sur la ligne 1 et la colonne 3
+```
+
+```
+## [1] "a"
+```
+
+```r
+df[,3]  # toutes les valeurs sur la colonne 3
+```
+
+```
+## [1] "a" "b" "c"
+```
+
+```r
+df[2,] # toutes les valeurs de la ligne 2
+```
+
+```
+##   X  Y Z
+## 2 2 11 b
+```
+
+```r
+df[2,1:2] # les deux premieres valeurs de la ligne 2
+```
+
+```
+##   X  Y
+## 2 2 11
+```
+---
+# Indexation d'un tableau
+
+Pour accéder à une colonne par son nom, on peut aussi utiliser l'opérateur `$` suivi du nom de la colonne :
+
+
+```r
+df
+```
+
+```
+##   X  Y Z
+## 1 1 10 a
+## 2 2 11 b
+## 3 3 12 c
+```
+
+```r
+df$X
+```
+
+```
+## [1] 1 2 3
+```
+---
+
+# Indexation d'un tableau
+
+Ou encore, on peut utiliser des double crochets avec l'index ou bien le nom de la variable à laquelle on s'intéresse:
+
+
+```r
+df[[3]]
+```
+
+```
+## [1] "a" "b" "c"
+```
+
+```r
+i &lt;- 3
+df[[i]]
+```
+
+```
+## [1] "a" "b" "c"
+```
+
+```r
+df[["Z"]]
+```
+
+```
+## [1] "a" "b" "c"
+```
+
+```r
+df$Z
+```
+
+```
+## [1] "a" "b" "c"
+```
+
+---
+name: operateurs-arithmetiques
+# Opérateurs arithmétiques
+
+Ils permettent d'effectuer des opérations arithmétiques simples, comme des additions, des multiplications,etc.
+
+
+```r
+v1
+```
+
+```
+## [1]  2.3  3.6  1.1  2.4  2.5 10.2  5.1  2.0
+```
+.small[
+
+```r
+v1 + 4 # addition
+```
+
+```
+## [1]  6.3  7.6  5.1  6.4  6.5 14.2  9.1  6.0
+```
+
+```r
+v1 - 3 # soustraction
+```
+
+```
+## [1] -0.7  0.6 -1.9 -0.6 -0.5  7.2  2.1 -1.0
+```
+
+```r
+v1 * 5 # multiplication
+```
+
+```
+## [1] 11.5 18.0  5.5 12.0 12.5 51.0 25.5 10.0
+```
+
+```r
+v1 / 4 # division
+```
+
+```
+## [1] 0.575 0.900 0.275 0.600 0.625 2.550 1.275 0.500
+```
+
+```r
+v1^2 # puissance
+```
+
+```
+## [1]   5.29  12.96   1.21   5.76   6.25 104.04  26.01   4.00
+```
+]
+---
+name: operateurs-comparaison
+# Opérateurs de comparaison
+
+Ils permettent de **comparer** des vecteurs entre eux.
+
+.pull-left[
+.small[
+
+```r
+v0 &lt;- v1[1:3]
+v0
+```
+
+```
+## [1] 2.3 3.6 1.1
+```
+
+
+```r
+v0 == 3.6 # égal à
+```
+
+```
+## [1] FALSE  TRUE FALSE
+```
+
+```r
+v0 != 2.3   # différent de
+```
+
+```
+## [1] FALSE  TRUE  TRUE
+```
+]
+]
+.pull-right[
+.small[
+
+```r
+v0 &lt; 4  # plus petit
+```
+
+```
+## [1] TRUE TRUE TRUE
+```
+
+```r
+v0 &gt; 10 # plus grand
+```
+
+```
+## [1] FALSE FALSE FALSE
+```
+
+```r
+v0 &lt;= 5 # plus petit ou égal
+```
+
+```
+## [1] TRUE TRUE TRUE
+```
+
+```r
+v0 &gt;= 3 # plus grand ou égal
+```
+
+```
+## [1] FALSE  TRUE FALSE
+```
+]
+]
+---
+name: operateurs-logiques
+# Opérateurs logiques
+
+Ils permettent de **vérifier si une proposition est vraie** ou non.
+
+.pull-left[
+
+
+```r
+v0
+```
+
+```
+## [1] 2.3 3.6 1.1
+```
+
+
+```r
+!(v0 &gt; 3)    # NON logique
+```
+
+```
+## [1]  TRUE FALSE  TRUE
+```
+
+```r
+v0 &lt; 2 &amp; v0 &gt; 5 # ET logique
+```
+
+```
+## [1] FALSE FALSE FALSE
+```
+
+```r
+v0 &lt; 3 | v0 &gt; 5 # OU logique
+```
+
+```
+## [1]  TRUE FALSE  TRUE
+```
+]
+
+.pull-right[
+Noter également l'existence de la fonction `is.na()` qui permet d'évaluer si les éléments d'un vecteur sont vides ou non
+
+
+```r
+v9 &lt;- c(3.2, NA, 59.2, NA)
+is.na(v9)
+```
+
+```
+## [1] FALSE  TRUE FALSE  TRUE
+```
+]
+
+
+---
+name: structure-donnees
+# Description des variables: Structure des données
+
+Dans R, un ensemble de fonctions permet d'afficher la **structure**, le **type**, le **contenu** ou encore les **dimensions** d'un objet
+
+.pull-left[
+.small[
+
+```r
+v9 &lt;- c(3.2, NA, 59.2, NA)
+v9
+```
+
+```
+## [1]  3.2   NA 59.2   NA
+```
+
+```r
+print(v9)
+```
+
+```
+## [1]  3.2   NA 59.2   NA
+```
+
+```r
+str(v9)
+```
+
+```
+##  num [1:4] 3.2 NA 59.2 NA
+```
+
+```r
+class(v9)
+```
+
+```
+## [1] "numeric"
+```
+
+```r
+length(v9)
+```
+
+```
+## [1] 4
+```
+]
+]
+
+.pull-right[
+.small[
+
+```r
+df &lt;- data.frame(X = c(1:4), Y = c(10:13),
+                 Z = c("a", "b", "c", "a"),
+                 stringsAsFactors = FALSE)
+str(df)
+```
+
+```
+## 'data.frame':	4 obs. of  3 variables:
+##  $ X: int  1 2 3 4
+##  $ Y: int  10 11 12 13
+##  $ Z: chr  "a" "b" "c" "a"
+```
+
+```r
+class(df)
+```
+
+```
+## [1] "data.frame"
+```
+
+```r
+dim(df)
+```
+
+```
+## [1] 4 3
+```
+
+```r
+unique(df$Z)
+```
+
+```
+## [1] "a" "b" "c"
+```
+]
+]
+---
+# Description des variables: Structure des données
+
+- 0n peut aussi se référer à l'interface graphique de RStudio :
+
+![](img/RStudio_str_variables.png)
+
+---
+name: afficher-tableau
+# Description des variables: Structure des données
+
+- Et pour les `data.frame`, à la fonction `View()`, qui affiche un tableau interactif dans l'interface :
+
+
+```r
+View(df)
+```
+.center[
+![:scale 65%](img/RStudio_View_df.png)
+]
+---
+name: indicateurs-stats
+# Description des variables: Indicateurs statistiques
+
+Soit `x` une variable aléatoire suivant une loi normale (`rnorm`) d'espérance (`mean`) 10 et d'écart-type (`sd`) 3 
+.small[
+
+```r
+x &lt;- round(rnorm(n = 15, mean = 10, sd = 3), digits = 1) 
+```
+]
+.pull-left[
+.small[
+
+```r
+mean(x)
+```
+
+```
+## [1] 9.36
+```
+
+```r
+median(x)
+```
+
+```
+## [1] 10.4
+```
+
+```r
+min(x)
+```
+
+```
+## [1] 4.1
+```
+
+```r
+max(x)
+```
+
+```
+## [1] 14.9
+```
+]
+]
+
+.pull-right[
+.small[
+
+```r
+var(x)
+```
+
+```
+## [1] 7.779714
+```
+
+```r
+sd(x)
+```
+
+```
+## [1] 2.789214
+```
+
+```r
+IQR(x)
+```
+
+```
+## [1] 3
+```
+
+```r
+summary(x)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    4.10    7.90   10.40    9.36   10.90   14.90
+```
+]
+]
+
+---
+
+# Description des variables: Indicateurs statistiques
+
+**N.B.** : Ces fonctions sont aussi valables pour les colonnes d'un `data.frame` :
+.small[
+
+```r
+df &lt;- data.frame(X = c(1:4),
+                 Y = c(10:13),
+                 Z = c("a", "b", "c", "a"),
+                 stringsAsFactors = FALSE)
+```
+]
+.pull-left[
+.small[
+
+```r
+mean(df$X)
+```
+
+```
+## [1] 2.5
+```
+
+```r
+median(df$Y)
+```
+
+```
+## [1] 11.5
+```
+
+```r
+min(df[,c(1,2)])
+```
+
+```
+## [1] 1
+```
+
+```r
+max(df[,c(1,2)])
+```
+
+```
+## [1] 13
+```
+]
+]
+
+.pull-right[
+.small[
+
+```r
+summary(df$X)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    1.00    1.75    2.50    2.50    3.25    4.00
+```
+
+```r
+summary(df)
+```
+
+```
+##        X              Y              Z            
+##  Min.   :1.00   Min.   :10.00   Length:4          
+##  1st Qu.:1.75   1st Qu.:10.75   Class :character  
+##  Median :2.50   Median :11.50   Mode  :character  
+##  Mean   :2.50   Mean   :11.50                     
+##  3rd Qu.:3.25   3rd Qu.:12.25                     
+##  Max.   :4.00   Max.   :13.00
+```
+]
+]
+---
+# Description des variables: Indicateurs statistiques
+
+- Pour décrire un `data.frame`, des fonctions spécifiques sont disponibles
+.small[
+
+```r
+df &lt;- data.frame(X = c(1:10),
+                 Y = c(30:21),
+                 Z = rep(c("a", "b", "c", "a", "c"), 2),
+                 stringsAsFactors = FALSE)
+```
+]
+.pull-left[
+.small[
+
+```r
+nrow(df) # Nombre de lignes (row)
+```
+
+```
+## [1] 10
+```
+
+```r
+ncol(df) # Nombre de colonnes (col)
+```
+
+```
+## [1] 3
+```
+
+```r
+colnames(df) # Nom des colonnes
+```
+
+```
+## [1] "X" "Y" "Z"
+```
+]
+]
+
+.pull-right[
+.small[
+
+```r
+head(df) # 5 premières lignes
+```
+
+```
+##   X  Y Z
+## 1 1 30 a
+## 2 2 29 b
+## 3 3 28 c
+## 4 4 27 a
+## 5 5 26 c
+## 6 6 25 a
+```
+
+```r
+tail(df) # 5 dernières lignes
+```
+
+```
+##     X  Y Z
+## 5   5 26 c
+## 6   6 25 a
+## 7   7 24 b
+## 8   8 23 c
+## 9   9 22 a
+## 10 10 21 c
+```
+]
+]
+---
+name: fonctions
+# Fonctions: remarques
+
+.pull-left[
+Nous avons d'ores et déjà utilisé un certain nombre de fonctions, comme 
+
+- **c()**, 
+- **seq()**, 
+- **rep()**, 
+- **data.frame()**, 
+- **mean()**, etc.
+
+Toutes les fonctions que nous avons utilisées jusqu'à présent sont définies sur le **package de base** de R. 
+
+]
+.pull-right[
+Les fonctions sont des **objets** qui s'écrivent avec des **parenthèses**, dans lesquelles l'utilisateur précise la **valeur des arguments** si besoin est.
+Ces arguments peuvent être **obligatoires** ou **optionnels** :
+.small[
+
+```r
+quantile(x = x, probs = 0.1)
+```
+
+```
+##  10% 
+## 5.54
+```
+]
+
+L'argument `x` est obligatoire, et l'argument `probs` est optionnel. On peut ainsi ne passer que l'argument `x` à la fonction:
+.small[
+
+```r
+quantile(x = x)
+```
+
+```
+##   0%  25%  50%  75% 100% 
+##  4.1  7.9 10.4 10.9 14.9
+```
+]           
+]
+---
+# Fonctions: remarques
+
+Si l'on passe les arguments à la fonction **dans le bon ordre**, on n'a pas besoin de préciser le nom des arguments. Ainsi, il est possible d'appeler la fonction `quantile` des deux manières suivantes:
+
+
+```r
+quantile(x = x, probs = 0.1)
+```
+
+```
+##  10% 
+## 5.54
+```
+
+```r
+quantile(x, 0.1)
+```
+
+```
+##  10% 
+## 5.54
+```
+
+En revanche, l'appel suivant produira une erreur:
+
+
+```r
+quantile(0.1,x)
+```
+
+```
+## Error in quantile.default(0.1, x): 'probs' outside [0,1]
+```
+
+---
+# Fonctions: remarques
+
+Pour accéder aux **informations** quant aux **arguments** d'une fonction, on peut consulter l'aide associée des deux façons suivantes:
+
+
+```r
+help(quantile)
+?quantile
+```
+.pull-left[
+![](img/RStudio_help.png)
+]
+.pull-right[
+![](img/quantile_help_1.png)
+]
+
+]
+---
+name: packages
+# Packages
+
+Les packages sont des **paquets de fonctions** visant à réaliser des tâches un peu particulières. L'installation de base de R vous installe, par défaut, un certain nombre de packages (`base`, `methods`, `stats`, `graphics`, etc.)
+
+Dans la suite de ce cours, nous serons amenés à utiliser le package `dplyr` qui sert à manipuler des tableaux de données.
+
+
+Pour être en mesure d'utiliser les fonctions de ce package, il faut:
+
+- **Installer le package**: les fonctions du package sont alors téléchargées depuis un serveur distant et enregistrées sur le disque dur de votre ordinateur:
+
+
+```r
+install.packages("dplyr")
+```
+
+- **Charger le package** (les fonctions du package sont chargées dans l'environnement R pour la session en cours)
+
+
+```r
+library(dplyr)  
+```
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create();
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

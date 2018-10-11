@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Visualisation de données avec R</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Robin Cura, Hélène Mathian &amp; Lise Vaudor" />
+    <link rel="stylesheet" href="www/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="www/style.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Visualisation de données avec R
+## La <i>“Grammar of Graphics”</i>
+### Robin Cura, Hélène Mathian &amp; Lise Vaudor
+### 15/10/2018<br/><br /> École Thématique GeoViz 2018
+
+---
+
+
+## Sommaire
+
+[La *Grammar of Graphics*](#grammar-of-graphics)
+
+[Les composants d'un graphique ggplot2](#ggplot2)
+- [Des données `tidy`](#tidy-data)
+- [Les géométries : `geom_`](#geoms)
+- [Mapper les variables aux géométries : les `aesthetics`](#aesthetics)
+- [Organiser les échelles : `scale_`](#scales)
+- [Ratios et systèmes de coordonnées : `coords`](#coords)
+- [Les `labels` d'un graphique](#labels)
+- [Définir les légendes : les `guides`](#legendes)
+- [Décomposer un graphique selon des `facets`](#facets)
+- [Superposition de couches](#add-layers)
+- [Composition d'un planche avec `patchwork`](#patchwork)
+
+[Exercice d'application](#exercice)
+
+[Ressources et supports](#supports)
+
+
+---
+name: grammar-of-graphics
+## La *Grammar of Graphics*
+Conceptualisée par Leland Wilkinson (2006 [1999])
+
+.pull-left[
+![](img/wilkinson_gg_plot.png)
+]
+.pull-right[
+![](img/wilkinson_gg_tree.png)
+]
+.center[
+![:scale 70%](img/wilkinson_gg_chain.png)
+]
+
+---
+## La *Grammar of Graphics*
+
+#### VegaLite (JavaScript) 
+.small[
+```
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
+  "data": {"url": "data/cars.json"},
+  "mark": "point",
+  "encoding": {
+    "x": {"field": "Horsepower", "type": "quantitative"},
+    "y": {"field": "Miles_per_Gallon", "type": "quantitative"},
+    "color": {"field": "Origin", "type": "nominal"}
+  }
+}
+```
+]
+.center[
+![:scale 50%](img/gg_vegalite.png)
+]
+
+---
+## La *Grammar of Graphics*
+
+#### Altair (Python)
+.small[
+```
+import altair as alt
+
+alt.Chart(cars).mark_circle(size=60).encode(x='Horsepower', y='Miles_per_Gallon', color='Origin')
+```
+]
+.center[
+![:scale 70%](img/gg_altair.png)
+]
+
+---
+## La *Grammar of Graphics*
+
+#### ggplot2 (R)
+.small[
+```
+library(ggplot2)
+
+ggplot(cars) +
+  geom_point(aes(x = Horsepower, y = Miles_per_Gallon, color = Origin))
+```
+]
+.center[
+![:scale 80%](img/gg_ggplot2.png)
+]
+
+---
+## `ggplot2` : une implémentation de la *grammar of graphics*
+![](img/socviz_ggplot_chain.png)
+.small[
+Healy, K. (2018). Data Visualization: A Practical Introduction. S.l.: Princeton University Press. http://socviz.co/
+
+]
+
+---
+name: ggplot2
+## `ggplot2` : une implémentation de la *grammar of graphics*
+Décrire la syntaxe d'un graphique à l'aide d'une grammaire composée d'éléments atomiques :
+
+- Des données (`data`)
+- Des objets géométriques (point, ligne, rectangle, barre etc.) (`geom_*`)
+    - Un *mapping* entre les données et les "esthétiques" géométriques correspondantes (*aesthetics*, `aes()`)
+- Des échelles pour définir les étendues et transformations de l'espace du graphique (`scales_`)
+- Un système de coordonnées pour définir le lien entre les échelles (`coord_`)
+- Des éléments d'habillage : textes (*labels*, `labs`) et légendes (*guides*, `guides`)
+- Éventuellement, des éléments de décomposition des graphiques, les `facets`
+    
+Tous ces éléments s'accumulent, comme des propriétés supplémentaires, via l'opérateur `+`
+    
+---
+name: tidy-data
+## Les données
+
+- Tout graphique `ggplot2` doit commencer par un appel aux données :
+.small[
+
+
+```r
+library(ggplot2) # ou library(tidyverse)
+df_dmr_spatialise &lt;- readRDS(file = "dans_ma_rue_clean.RDS")
+ggplot(data = df_dmr_spatialise)
+```
+]
+
+- Les données doivent être structurées de manière **tidy**, dans un `data.frame` (ou un `tibble`) :
+    - 1 ligne = 1 individu
+    - 1 colonne = 1 variable homogène et cohérente
+      - `\(\rhd\)` On privilégie des données au format **long**
+      
+- Ex. pour stocker des données temporelles :
+.pull-left[
+.small[
+|Ville|CP|Pop1999|Pop2011|
+|------|---|---|---|
+|Paris|75000|2125|2250|
+|Lyon|69000|445|491|
+|Marseille|13000|796|851|
+]
+]
+
+
+.pull-right[
+.small[
+|Ville|CP|Annee|Population|
+|------|---|---|---|
+|Paris|75000|1999|2125|
+|Paris|75000|2011|2250|
+|Lyon|69000|1999|445|
+|Lyon|69000|2011|491|
+|Marseille|13000|1999|796|
+|Marseille|13000|2011|851|
+]
+]
+---
+name: geoms
+## Les géométries
+
+- Le composant de base des graphiques : quelle géométrie donner à chaque couche (*layer*) de données ?
+#### https://ggplot2.tidyverse.org/reference/index.html#section-layer-geoms
+
+.pull-left[
+![:scale 80%](img/gg_geom_1.png)
+]
+
+.pull-right[
+![:scale 80%](img/gg_geom_2.png)
+]
+
+---
+## Les géométries
+
+- Une liste complète dans la [*cheatsheet* de ggplot2](https://www.rstudio.com/resources/cheatsheets/#ggplot2)
+.center[
+![:scale 80%](img/ggplot_geom_cheatsheet.png)
+]
+---
+name: aesthetics
+## Les *aesthetics*
+
+- Chaque géométrie comporte des propriétés, génériques (`x`, `y`, `colour`...) ou spécifiques (`linetype`, `shape`, `xmin`...) qui doivent être rapportées (avec un **mapping**) à des variables : ce sont les "esthétiques" (`aes`)
+
+- Ex. : une géométrie de type ponctuelle (`geom_point`) requiert au moins des coordonnées (`x` et `y`), et peut être enrichie avec des propriétés spécifiques (`alpha`, `color`, `fill`, `shape`, `size`, `stroke`) :
+
+.small[
+.pull-left[
+
+```r
+pointData &lt;- df_dmr_spatialise %&gt;%
+  filter(
+    TYPE == "Problème sur un chantier"
+    )
+
+ggplot(pointData) +
+* geom_point(aes(x = Long,
+*                y = Lat,
+*                color = CODE_POSTAL))
+```
+]
+]
+
+.pull-right[
+![](GeoViz2018_R_ggplot_files/figure-html/plot-label-out-1.png)&lt;!-- --&gt;
+]
+
+---
+## Les *aesthetics*
+
+- Chaque géométrie comporte des propriétés, génériques (`x`, `y`, `colour`...) ou spécifiques (`linetype`, `shape`, `xmin`...) qui doivent être rapportées (avec un **mapping**) à des variables : ce sont les "esthétiques" (`aes`)
+
+- Ex. : une géométrie de type ponctuelle (`geom_point`) requiert au moins des coordonnées (`x` et `y`), et peut être enrichie avec des propriétés spécifiques (`alpha`, `color`, `fill`, `shape`, `size`, `stroke`)
+
+- On peut aussi définir des propriétés "globales", qui ne dépendront pas du contenu du jeu de données :
+
+.small[
+.pull-left[
+
+```r
+pointData &lt;- df_dmr_spatialise %&gt;%
+  filter(
+    TYPE == "Problème sur un chantier"
+    )
+
+ggplot(pointData) +
+  geom_point(aes(x = Long,
+                 y = Lat,
+                 color = CODE_POSTAL),
+*            size = 3,
+*            alpha = .2)
+```
+]
+]
+
+.pull-right[
+![](GeoViz2018_R_ggplot_files/figure-html/plot-label-out-2-1.png)&lt;!-- --&gt;
+]
+
+---
+## Les *aesthetics*
+
+- Chaque géométrie comporte des propriétés, génériques (`x`, `y`, `colour`...) ou spécifiques (`linetype`, `shape`, `xmin`...) qui doivent être rapportées (avec un **mapping**) à des variables : ce sont les "esthétiques" (`aes`)
+
+- Ex. : une géométrie de type "colonne" (`geom_col`) requiert au moins des coordonnées (`x` et `y`), et peut être enrichie avec des propriétés spécifiques (`x`, `y`, `alpha`, `color`, `fill`, `group`,
+`linetype`, `size`, `position`)
+
+.small[
+.pull-left[
+
+```r
+colData &lt;- df_dmr_spatialise %&gt;%
+  filter(
+    TYPE == "Problème sur un chantier"
+    ) %&gt;%
+  group_by(CODE_POSTAL,
+           ANNEE_DECLARATION) %&gt;%
+  summarise(NbProblemes = n())
+
+ggplot(colData) +
+  geom_col(aes(x = CODE_POSTAL,
+               y = NbProblemes,
+*              fill = ANNEE_DECLARATION,
+*              group = ANNEE_DECLARATION),
+*          position = "dodge")
+```
+]
+]
+
+.pull-right[
+![](GeoViz2018_R_ggplot_files/figure-html/plot-label-out-3-1.png)&lt;!-- --&gt;
+]
+
+---
+name: scales
+## Les échelles
+
+- Quand on veut modifier la manière dont les axes sont conçus, on peut jouer sur les **échelles** (`scale_`)
+
+- Par exemple, pour choisir une échelle logarithmique pour les ordonnées du graphique précédent :
+
+
+.small[
+.pull-left[
+
+```r
+colData &lt;- df_dmr_spatialise %&gt;%
+  filter(
+    TYPE == "Problème sur un chantier"
+    ) %&gt;%
+  group_by(CODE_POSTAL,
+           ANNEE_DECLARATION) %&gt;%
+  summarise(NbProblemes = n())
+
+ggplot(colData) +
+  geom_col(aes(x = CODE_POSTAL,
+               y = NbProblemes,
+               fill = ANNEE_DECLARATION,
+               group = ANNEE_DECLARATION),
+           position = "dodge") +
+* scale_y_log10()
+```
+]
+]
+
+.pull-right[
+![](GeoViz2018_R_ggplot_files/figure-html/plot-label-out-4-1.png)&lt;!-- --&gt;
+]
+
+---
+## Les échelles
+
+- Quand on veut modifier la manière dont les axes sont conçus, on peut jouer sur les **échelles** (`scale_`)
+
+- Par exemple, pour choisir une échelle logarithmique pour les ordonnées du graphique précédent
+
+- Et pour modifier l'échelle de couleurs :
+
+
+.smaller[
+.pull-left[
+
+```r
+colData &lt;- df_dmr_spatialise %&gt;%
+  filter(
+    TYPE == "Problème sur un chantier"
+    ) %&gt;%
+  group_by(CODE_POSTAL,
+           ANNEE_DECLARATION) %&gt;%
+  summarise(NbProblemes = n())
+
+ggplot(colData) +
+  geom_col(aes(x = CODE_POSTAL,
+               y = NbProblemes,
+               fill = as.character(ANNEE_DECLARATION),
+               group = as.character(ANNEE_DECLARATION)),
+           position = "dodge") +
+* scale_y_log10() +
+* scale_fill_brewer(palette = "Greens", direction = -1)
+```
+]
+]
+
+.pull-right[
+![](GeoViz2018_R_ggplot_files/figure-html/plot-label-out-5-1.png)&lt;!-- --&gt;
+]
+---
+name: coords
+## Les coordonnées
+
+- On l'a vu avec les "cartes" de répartition, `ggplot2` affiche un graphique en maximisant l'espace disponible pour chaque axe : quand les rapports entre les coordonnées `x` et `y` ont un sens, il faut l'expliciter avec les `coord_` :
+
+.smaller[
+
+```r
+pointData &lt;- df_dmr_spatialise %&gt;%  filter( TYPE == "Problème sur un chantier")
+```
+]
+
+.pull-left[
+.smaller[
+
+```r
+ggplot(pointData) +
+  geom_point(aes(x = Long, y = Lat,
+                 color = CODE_POSTAL),
+             size = 3, alpha = .2) +
+* coord_fixed(ratio = 1) # On fixe 1x = 1y
+```
+
+![](GeoViz2018_R_ggplot_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+]
+]
+
+.pull-right[
+.smaller[
+
+```r
+ggplot(pointData) +
+  geom_point(aes(x = Long, y = Lat,
+                 color = CODE_POSTAL),
+             size = 3, alpha = .2) +
+* coord_map(projection = "mercator")
+*# ratio x/y selon la projection de Mercator
+```
+
+![](GeoViz2018_R_ggplot_files/figure-html/unnamed-chunk-5-1.png)&lt;!-- --&gt;
+]
+]
+
+---
+name: labels
+## Habillage : textes
+
+- Par défaut, les textes (titres des axes etc.) prennent comme valeur automatique le nom des variables qui leurs sont attribuées.
+
+- On peut modifier tous ces éléments, afin d'habiller correctement les graphiques produits, avec l'instruction `labs` (*labels*) :
+
+.smaller[
+
+
+```r
+ggplot(pointData) +
+  geom_point(aes(x = Long, y = Lat, color = CODE_POSTAL), size = 3, alpha = .2) +
+  coord_map(projection = "mercator") +
+* labs(title = 'Incidents déclarés à Paris entre 2012 et 2018',
+*     subtitle = 'Incidents de type "Problème sur un chantier"',
+*     caption = 'Sources : Données "Dans ma Rue", Paris OpenData, 2018',
+*     x = "Longitude", y = "Latitude")
+```
+
+![](GeoViz2018_R_ggplot_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+]
+
+---
+name: legendes
+## Habillage : légendes
+
+- On peut modifier et désactiver les légendes directement depuis les échelles (`scales`) correspondantes.
+
+.smaller[
+
+
+```r
+ggplot(pointData) +
+  geom_point(aes(x = Long, y = Lat, color = CODE_POSTAL), size = 3, alpha = .2) +
+  coord_map(projection = "mercator") +
+  labs(title = 'Incidents déclarés à Paris entre 2012 et 2018',
+      subtitle = 'Incidents de type "Problème sur un chantier"',
+      caption = 'Sources : Données "Dans ma Rue", Paris OpenData, 2018',
+      x = "Longitude", y = "Latitude") +
+* scale_color_discrete(guide = FALSE) +
+* scale_x_continuous(labels = NULL, breaks = NULL, minor_breaks = NULL) +
+* scale_y_continuous(labels = NULL, breaks = NULL, minor_breaks = NULL)
+```
+
+![](GeoViz2018_R_ggplot_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
+]
+---
+name: facets
+## Décomposer un graphique : les *facets*
+
+On peut "décomposer" un graphique (en *small multiples*) avec les instructions `facet_` :
+
+- `facet_wrap(~VARIABLE)` : décompose le graphique en autant de modalités que contenues dans `VARIABLE`. On règle leur agencement avec les arguments `nrow` (nombre de lignes) et/ou `ncol` (nombre de colonnes).
+
+.small[
+
+
+```r
+ggplot(pointData) +
+  geom_point(aes(x = Long, y = Lat, color = CODE_POSTAL), size = 2, alpha = .2) +
+  coord_map(projection = "mercator") +
+  labs(title = 'Incidents déclarés à Paris entre 2012 et 2018',
+      subtitle = 'Incidents de type "Problème sur un chantier"',
+      caption = 'Sources : Données "Dans ma Rue", Paris OpenData, 2018',
+      x = "Longitude", y = "Latitude") +
+  scale_color_discrete(guide = FALSE) +
+  scale_x_continuous(labels = NULL, breaks = NULL, minor_breaks = NULL) +
+  scale_y_continuous(labels = NULL, breaks = NULL, minor_breaks = NULL) +
+* facet_wrap(~ANNEE_DECLARATION, nrow = 1)
+```
+]
+
+---
+## Décomposer un graphique : les *facets*
+
+On peut "décomposer" un graphique (en *small multiples*) avec les instructions `facet_` :
+
+- `facet_wrap(~VARIABLE)` : décompose le graphique en autant de modalités que contenues dans `VARIABLE`. On règle leur agencement avec les arguments `nrow` (nombre de lignes) et/ou `ncol` (nombre de colonnes).
+
+.small[
+
+![](GeoViz2018_R_ggplot_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+]
+
+---
+## Décomposer un graphique : les *facets*
+
+On peut "décomposer" un graphique (en *small multiples*) avec les instructions `facet_` :
+
+- `facet_grid(VARIABLE1~VARIABLE2)` : décompose le graphique en un croisement des modalités contenues dans `VARIABLE1` et `VARIABLE2`.
+
+.small[
+
+
+```r
+ggplot(pointData %&gt;% filter(!is.na(SOUSTYPE))) +
+  geom_point(aes(x = Long, y = Lat, color = CODE_POSTAL), size = 2, alpha = .2) +
+  coord_map(projection = "mercator") +
+  labs(title = 'Incidents déclarés à Paris entre 2012 et 2018',
+      subtitle = 'Incidents de type "Problème sur un chantier"',
+      caption = 'Sources : Données "Dans ma Rue", Paris OpenData, 2018',
+      x = "Longitude", y = "Latitude") +
+  scale_color_discrete(guide = FALSE) +
+  scale_x_continuous(labels = NULL, breaks = NULL, minor_breaks = NULL) +
+  scale_y_continuous(labels = NULL, breaks = NULL, minor_breaks = NULL) +
+* facet_grid(SOUSTYPE~ANNEE_DECLARATION)
+```
+]
+
+---
+## Décomposer un graphique : les *facets*
+
+On peut "décomposer" un graphique (en *small multiples*) avec les instructions `facet_` :
+
+- `facet_grid(VARIABLE1~VARIABLE2)` : décompose le graphique en un croisement des modalités contenues dans `VARIABLE1` et `VARIABLE2`.
+
+.small[
+
+![](GeoViz2018_R_ggplot_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+]
+
+---
+name: add-layers
+## Superposer des couches graphiques
+
+`ggplot2` permet d'empiler des couches de représentations portant sur les mêmes données (représentations différentes) ou sur d'autres jeux de données (si tant est qu'ils se situent dans les mêmes étendues graphiques).
+Comme pour tous les éléments de `ggplot`, cela se fait avec l'opérateur `+` :
+
+.pull-left[
+.small[
+
+```r
+maCarte &lt;- ggplot(pointData) +
+  geom_point(aes(x = Long, y = Lat)) +
+  coord_map(projection = "mercator")
+maCarte
+```
+
+![](GeoViz2018_R_ggplot_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+]
+]
+
+.pull-right[
+.small[
+
+```r
+maCarte +
+* geom_density2d(aes(x = Long, y = Lat))
+```
+
+![](GeoViz2018_R_ggplot_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+]
+]
+
+---
+## Superposer des couches graphiques
+
+- **N.B.** : l'ordre d'ajout des couches est important : les dernières couches ajoutées seront positionnées "au dessus" des couches précédentes :
+
+.pull-left[
+.small[
+
+```r
+ggplot(pointData) +
+  aes(x = Long, y = Lat) + 
+* geom_point(colour = "white", alpha = .4) +
+* stat_density_2d(aes(fill = stat(level)),
+*                 geom = "polygon") +
+  coord_map(projection = "mercator")
+```
+
+![](GeoViz2018_R_ggplot_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+]
+]
+
+.pull-right[
+.small[
+
+```r
+ggplot(pointData) +
+  aes(x = Long, y = Lat) + 
+* stat_density_2d(aes(fill = stat(level)),
+*                 geom = "polygon") +
+* geom_point(colour = "white", alpha = .4) +
+  coord_map(projection = "mercator")
+```
+
+![](GeoViz2018_R_ggplot_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
+]
+]
+
+---
+name: patchwork
+## Composer une planche de graphiques
+
+- Avec le *package* `patchwork`, on peut facilement agencer différents graphiques
+
+.smaller[
+
+
+```r
+library(patchwork) # devtools::install_github("thomasp85/patchwork")
+```
+
+
+```r
+carteData &lt;- df_dmr_spatialise %&gt;%
+  filter(TYPE %in% c("Propreté", "Voirie et déplacements", "Éclairage / Électricité")) %&gt;%
+  filter(ANNEE_DECLARATION &gt;= 2015) %&gt;%
+  mutate(TRIMESTRE = paste(ANNEE_DECLARATION, TRIMESTRE_DECLARATION, sep="-")) %&gt;%
+  arrange(TRIMESTRE, TYPE)
+
+maCarte &lt;- ggplot(carteData) +
+  geom_point(aes(Long, Lat, colour = TYPE), size = .5, alpha = .3) +
+  facet_grid(ANNEE_DECLARATION~TYPE) +
+  coord_map(projection = "mercator") +
+  scale_colour_discrete(guide = FALSE)
+
+maCarte
+```
+
+![](GeoViz2018_R_ggplot_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+]
+---
+## Composer une planche de graphiques
+
+.smaller[
+
+```r
+evolData &lt;- carteData %&gt;%
+  group_by(TRIMESTRE, TYPE) %&gt;%
+  summarise(NbIncidents = n())
+
+evolNombre &lt;- ggplot(evolData) +
+  geom_line(aes(TRIMESTRE, NbIncidents, colour = TYPE, group = TYPE), size = 2) +
+  facet_wrap(~TYPE, nrow = 1) +
+  scale_colour_discrete(guide = FALSE)
+
+evolNombre
+```
+
+![](GeoViz2018_R_ggplot_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+]
+
+---
+## Composer une planche de graphiques
+
+.smaller[
+
+```r
+arrdtData &lt;- carteData %&gt;%
+  group_by(ANNEE_DECLARATION, CODE_POSTAL) %&gt;%
+  summarise(NbIncidents = n()) %&gt;%
+  ungroup() %&gt;%
+  mutate(ANNEE_DECLARATION = as.character(ANNEE_DECLARATION))
+
+evolArrdt &lt;- ggplot(arrdtData) +
+  geom_col(aes(CODE_POSTAL, NbIncidents, fill = ANNEE_DECLARATION), position = "dodge") +
+  scale_fill_viridis_d() +
+  theme(legend.position="bottom",
+        axis.text.x = element_text(angle = 45, hjust = 1)) 
+
+evolArrdt
+```
+
+![](GeoViz2018_R_ggplot_files/figure-html/unnamed-chunk-19-1.png)&lt;!-- --&gt;
+]
+
+---
+## Composer une planche de graphiques
+.small[
+
+```r
+*(maCarte | (evolNombre / evolArrdt))
+```
+
+![](GeoViz2018_R_ggplot_files/figure-html/unnamed-chunk-20-1.png)&lt;!-- --&gt;
+]
+
+
+---
+name: supports
+## Cheatsheets
+
+.pull-left[
+.center[
+![](img/cheatsheet-ggplot2-1.png)
+]
+]
+
+.pull-right[
+.center[
+![](img/cheatsheet-ggplot2-2.png)
+]
+]
+.center[
+www.rstudio.com/resources/cheatsheets/#ggplot2
+]
+
+---
+## Où trouver de la documentation/aide ?
+
+- Articles rstudio
+- Blogs ? Lesquels ?
+- Livres
+
+---
+name: exercice
+class: inverse, center, middle
+
+### Un peu de pratique ! &lt;br/&gt;Proposer des représentations graphiques, à partir du jeu de données "Dans ma Rue", permettant de saisir l'évolution, dans le temps et dans l'espace, des signalements d'anomalies.
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script src="macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
