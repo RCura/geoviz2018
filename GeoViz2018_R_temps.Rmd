@@ -5,10 +5,11 @@ author: "Robin Cura, Hélène Mathian & Lise Vaudor"
 date: ["16/10/2018<br/><br /> École Thématique GeoViz 2018 "]
 output:
   xaringan::moon_reader:
+    chakra: "www/libs/remark.min.js"
     lib_dir: "www/libs"
     css: ["www/xaringan-themer.css", "www/style.css"]
     nature:
-        beforeInit: "macros.js"
+        beforeInit: "www/macros.js"
         highlightLines: true
 editor_options: 
   chunk_output_type: console
@@ -26,7 +27,9 @@ duo(
 )
 library(knitr)
 opts_chunk$set(cache = TRUE,
-               cache.lazy = FALSE)
+               cache.lazy = FALSE,
+               warning=FALSE,
+               message=FALSE)
 
 hook_source <- knitr::knit_hooks$get('source')
 knitr::knit_hooks$set(source = function(x, options) {
@@ -35,13 +38,321 @@ knitr::knit_hooks$set(source = function(x, options) {
 })
 ```
 
+## Sommaire
+
+.pull-left[
+Manipuler des données de type date-time
+- [Convertir une chaîne de caractères en date-time](#conversion-datetime)
+- [Arrondir des données date-time](#arrondi-datetime)
+- [Durées, périodes, intervalles](#durees-periodes-sequences-intervalles)
+]
+.pull-right[
+Visualiser des données temporelles
+- [Visualisation simple](#visual-simple)
+- [Visualisation d'une tendance](#visual-tendance)
+- [Visualisation de données agrégées](#visual-agregation)
+- [Visualisation d'une périodicité, d'un intervalle](#visual-periode-intervalle)
+]
+
+---
 ## Manipulation de données temporelles avec R : `lubridate`
 
+Pour manipuler des données temporelles avec R, on va utiliser le package `lubridate`, qui fait partie des packages du tidyverse et comprend des fonctions.
+
+On utilisera aussi `dplyr` et `ggplot`. On peut donc charger directement le `tidyverse`...
+
+```{r}
+library(tidyverse)
+library(lubridate)
+```
+
 ---
-## Manipulation de séries temporelles avec R : `tibbletime`
+name: conversion-datetime
+## Convertir une chaîne de caractères en date-time
+
+
+.pull-left[
+**Date**:
+
+Il suffit de préciser l'ordre des éléments à travers le nom de la fonction:
+.small[
+```{r}
+ymd("2019/04_11")
+dmy("11 Avril 2019")
+mdy("April 11th, 2019")
+```
+]
+]
+.pull-right[
+
+**Date-time**:
+Même principe!
+
+.small[
+```{r}
+ymd_hm("2019.04.11 14h37")
+ymd_hms("20190407143752")
+hms("14h37min52s")
+```
+]
+]
+
+---
+## Extraire un des composants d'une date-time
+.pull-left[
+```{r, echo=FALSE}
+t <- ymd_hms("2019.04.11 14h37min52s")
+```
+Examinons par exemple la date-time suivante:
+```{r}
+t
+```
+On peut extraire **un des composants** de la date ou date-time à travers une série de fonctions du type `unitedetemps()`. 
+]
+.pull-right[ 
+Par exemple:
+.small[
+```{r}
+date(t)
+hour(t)
+minute(t)
+second(t)
+```
+]
+]
+
+---
+name: arrondi-datetime
+## Arrondir une date ou date-temps
+
+.pull-left[
+Il est possible d'arrondir une date ou date-temps
+
+- vers la **valeur la plus proche** (`round_date()`)
+- vers le **haut** (`ceiling_date()`)
+- vers le **bas** (`floor_date()`)
+
+```{r, echo=FALSE}
+t <- ymd_hms("2019.04.11 14h37min52s")
+```
+
+```{r}
+t
+round_date(t,"hour")
+```
+]
+.pull-right[
+
+On peut arrondir à l'**unité** de son choix 
+- `second`, `minute`, ou `hour`,
+- `day`, `month`, ou `year`
+- ou encore: `week`, `bimonth`, `quarter`, `season`, et `halfyear`
+
+```{r}
+round_date(t,"day")
+round_date(t,"year")
+```
+]
+
+---
+name: durees-periodes-sequences-intervalles
+## Calculer des durées ou périodes
+
+.pull-left[
+```{r}
+t1 <- dmy("17/07/2018")
+t2 <- dmy("17/04/2019")
+diff <- t2-t1
+diff
+```
+
+`diff` correspond à une **différence** entre t1 et t2. Il s'agit d'un objet de classe **difftime**
+.small[
+```{r}
+# tps "physique"
+as.duration(diff)
+# tps "social"
+as.period(diff) 
+```
+]
+]
+.pull-right[
+
+- **durées**: `dxxx()` (par exemple `ddays()` ou `dyears()`) .small[
+```{r}
+t1+dyears(10)
+```
+]
+- **périodes**: fonctions `xxx()` (par exemple `days()` ou `months()`)
+.small[
+```{r}
+t1+years(10)
+```
+]
+]
+
+---
+## Créer des séquences et intervalles de temps
+
+Création de séquences à travers les commandes: 
+
+- `dxxx(seq(...,...,...))`
+- `xxx(seq(...,...,...))`
+
+.small[
+```{r,echo=FALSE}
+t0 <- dmy_hms("01/01/2018 00:00:00")
+```
+
+```{r}
+t0
+t0+dminutes(seq(0,45,by=15))
+```
+]
+
+Création d'**intervalles**:
+
+.small[
+```{r}
+itv <- interval(t0+dminutes(seq(0,45,by=15)),
+                t0+dminutes(seq(0,45,by=15)))
+# commande equivalente: ...%--%...
+```
+]
+
+---
+## Déterminer l'occurrence d'un événement dans un intervalle
+
+Disposer d'un intervalle, cela permet de réaliser certaines opérations, comme (par exemple) déterminer si une date-time donnée **fait partie de l'intervalle**:
+
+```{r}
+itv
+```
+
+```{r,echo=FALSE}
+t <- dmy_hms("01/01/2018 00:17:45")
+```
+
+```{r}
+t
+t %within% itv
+```
+
+---
+name: visual-simple
+## Visualiser une série temporelle
+
+.small[
+```{r fig.width=10, fig.height=3}
+df_dmr <- readRDS("dans_ma_rue_clean.RDS")
+df_dmr_parjour  <- df_dmr  %>% 
+  group_by(DATEDECL) %>%#<<
+  summarise(NBDECL=n())#<<
+
+ggplot(df_dmr_parjour, aes(x=DATEDECL, NBDECL))+
+  geom_line()
+```
+]
+
+---
+name: visual-tendance
+## Visualiser une tendance
+
+```{r fig.width=10, fig.height=3}
+ggplot(df_dmr_parjour,aes(x=DATEDECL, y=NBDECL))+
+  geom_line()+
+  geom_smooth(span=0.1)#<<
+```
+
+Ici il s'agit simplement d'une **régression non-paramétrique** => Il est difficile de définir exactement la "tendance centrale".
+
+---
+## Visualiser une tendance
+
+Pour visualiser une tendance il est également possible de représenter une **moyenne mobile** (moyenne ou autre métrique):
+
+```{r, fig.width=10, fig.height=3}
+library(zoo)
+df_dmr_parjour <-df_dmr_parjour %>% 
+         mutate(movavNBDECL=rollapply(NBDECL,15,mean,fill=NA))#<<
+ggplot(df_dmr_parjour, aes(x=DATEDECL, y=NBDECL))+
+  geom_line()+
+  geom_line(aes(y=movavNBDECL), col="steelblue", size=1)#<<
+```
+
+---
+name: visual-agregation
+## Agréger la donnée temporelle
+
+Par exemple, ici, on **agrège** la donnée par **semaine**.
+
+```{r}
+df_dmr_parsemaine <- df_dmr %>%
+         mutate(SEMAINE=round_date(DATEDECL,"week")) %>% 
+         group_by(SEMAINE) %>% #<<
+         summarise(NBDECL=n()) #<<
+```
+
+La représentation des données s'en trouve de fait **moins bruitée**:
+
+```{r fig.width=10, fig.height=3}
+ggplot(df_dmr_parsemaine, aes(x=SEMAINE, y=NBDECL)) +
+  geom_line()
+```
+
+
+---
+name: visual-periode-intervalle
+## Visualiser une périodicité
+
+.pull-left[
+Par exemple, pour considérer la périodicité du signal sur une semaine, on peut récupérer le **jour de la semaine** avec la fonction `wday()`.
+.small[
+```{r}
+df_dmr_joursemaine=df_dmr %>% 
+  mutate(JOURSEMAINE=wday(DATEDECL,label=TRUE)) #<< 
+
+```
+]
+]
+.pull-right[
+On peut alors représenter le **nombre total de déclarations d'incidents en fonction du jour de la semaine**:
+
+```{r fig.width=5, fig.height=3}
+ggplot(df_dmr_joursemaine,
+       aes(x=JOURSEMAINE))+
+  geom_bar()
+```
+]
+
+---
+## Visualiser des intervalles particuliers
+
+.small[
+```{r fig.width=10, fig.height=3}
+vacances <- readr::read_csv("data/vacances.csv") %>% 
+  mutate(Debut=as_datetime(dmy(Fin_des_cours)), #<<
+         Fin=as_datetime(dmy(Reprise_des_cours))) #<<
+
+ggplot(df_dmr_parjour,
+            aes(x=DATEDECL, y=NBDECL))+
+  geom_rect(data=vacances,inherit.aes=FALSE, #<< 
+            aes(xmin=Debut, xmax=Fin, #<< 
+                ymin=-Inf,ymax=+Inf), #<< 
+            alpha=0.5, fill="lightyellow") + #<<  
+  geom_line()+
+  geom_line(aes(y=movavNBDECL), col="steelblue", size=1)
+```
+]
+
+
+---
+## Voir aussi
+
+Manipulation de séries temporelles avec R : `tibbletime` -->
 
 https://github.com/business-science/tibbletime
----
-## Agrégation de séries temporelles avec R : `tstibble`
+
+Agrégation de séries temporelles avec R : `tsibble`
 
 https://github.com/tidyverts/tsibble
