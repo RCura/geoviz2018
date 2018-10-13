@@ -102,10 +102,7 @@ On va ouvrir et lire la table de données `dans_ma_rue.csv` :
 .small[
 ```{r}
 library(readr)
-df_dmr <- read_delim("data/dans-ma-rue.csv",
-                     delim = ";",
-                     escape_double = FALSE,
-                     trim_ws = TRUE)
+df_dmr <- read_csv2("data/dans-ma-rue.zip")
 
 ```
 ]
@@ -980,7 +977,7 @@ library(tidyverse)
 .small[
 ```{r}
 # Lecture du jeu de données
-df_dmr <- read_delim(file = "data/dans-ma-rue.csv", delim = ";") 
+df_dmr <- read_csv2(file = "data/dans-ma-rue.zip") 
 ```
 ]
 

@@ -91,10 +91,11 @@ On va ouvrir et lire la table de données `dans_ma_rue.csv` :
 
 ```r
 library(readr)
-df_dmr &lt;- read_delim("data/dans-ma-rue.csv",
-                     delim = ";",
-                     escape_double = FALSE,
-                     trim_ws = TRUE)
+df_dmr &lt;- read_csv2("data/dans-ma-rue.zip")
+```
+
+```
+## Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
 ```
 
 ```
@@ -105,11 +106,11 @@ df_dmr &lt;- read_delim("data/dans-ma-rue.csv",
 ##   ADRESSE = col_character(),
 ##   CODE_POSTAL = col_integer(),
 ##   VILLE = col_character(),
-##   ARRONDISSEMENT = col_double(),
+##   ARRONDISSEMENT = col_number(),
 ##   DATEDECL = col_datetime(format = ""),
 ##   `ANNEE DECLARATION` = col_integer(),
 ##   `MOIS DECLARATION` = col_integer(),
-##   NUMERO = col_double(),
+##   NUMERO = col_number(),
 ##   PREFIXE = col_character(),
 ##   INTERVENANT = col_character(),
 ##   `CONSEIL DE QUARTIER` = col_character(),
@@ -178,16 +179,16 @@ df_dmr
 ## # A tibble: 343,642 x 16
 ##    TYPE  SOUSTYPE ADRESSE CODE_POSTAL VILLE ARRONDISSEMENT
 ##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
-##  1 Mobi… Mobilie… 16 rue…       75011 Pari…             11
-##  2 Obje… Gravats… 15 rue…       75018 Pari…             18
-##  3 Obje… Meubles… 16 rue…       75019 Pari…             19
-##  4 Voir… Station… 15 rue…       75003 Pari…              3
-##  5 Prop… Malprop… 24 rue…       75018 Pari…             18
-##  6 Mobi… Mobilie… 9 vill…       75014 Pari…             14
-##  7 Obje… Planche… 19 rue…       75011 Pari…             11
-##  8 Obje… Objets … 3 aven…       75016 Pari…             16
-##  9 Voir… Trottoi… 185b r…       75018 Pari…             18
-## 10 Prop… Malprop… 138 ru…       75020 Pari…             20
+##  1 Mobi… Mobilie… 16 rue…       75011 Pari…            110
+##  2 Obje… Gravats… 15 rue…       75018 Pari…            180
+##  3 Obje… Meubles… 16 rue…       75019 Pari…            190
+##  4 Voir… Station… 15 rue…       75003 Pari…             30
+##  5 Prop… Malprop… 24 rue…       75018 Pari…            180
+##  6 Mobi… Mobilie… 9 vill…       75014 Pari…            140
+##  7 Obje… Planche… 19 rue…       75011 Pari…            110
+##  8 Obje… Objets … 3 aven…       75016 Pari…            160
+##  9 Voir… Trottoi… 185b r…       75018 Pari…            180
+## 10 Prop… Malprop… 138 ru…       75020 Pari…            200
 ## # ... with 343,632 more rows, and 10 more variables: DATEDECL &lt;dttm&gt;,
 ## #   `ANNEE DECLARATION` &lt;int&gt;, `MOIS DECLARATION` &lt;int&gt;, NUMERO &lt;dbl&gt;,
 ## #   PREFIXE &lt;chr&gt;, INTERVENANT &lt;chr&gt;, `CONSEIL DE QUARTIER` &lt;chr&gt;,
@@ -233,16 +234,16 @@ print(df_dmr)
 ## # A tibble: 343,642 x 16
 ##    TYPE  SOUSTYPE ADRESSE CODE_POSTAL VILLE ARRONDISSEMENT
 ##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
-##  1 Mobi… Mobilie… 16 rue…       75011 Pari…             11
-##  2 Obje… Gravats… 15 rue…       75018 Pari…             18
-##  3 Obje… Meubles… 16 rue…       75019 Pari…             19
-##  4 Voir… Station… 15 rue…       75003 Pari…              3
-##  5 Prop… Malprop… 24 rue…       75018 Pari…             18
-##  6 Mobi… Mobilie… 9 vill…       75014 Pari…             14
-##  7 Obje… Planche… 19 rue…       75011 Pari…             11
-##  8 Obje… Objets … 3 aven…       75016 Pari…             16
-##  9 Voir… Trottoi… 185b r…       75018 Pari…             18
-## 10 Prop… Malprop… 138 ru…       75020 Pari…             20
+##  1 Mobi… Mobilie… 16 rue…       75011 Pari…            110
+##  2 Obje… Gravats… 15 rue…       75018 Pari…            180
+##  3 Obje… Meubles… 16 rue…       75019 Pari…            190
+##  4 Voir… Station… 15 rue…       75003 Pari…             30
+##  5 Prop… Malprop… 24 rue…       75018 Pari…            180
+##  6 Mobi… Mobilie… 9 vill…       75014 Pari…            140
+##  7 Obje… Planche… 19 rue…       75011 Pari…            110
+##  8 Obje… Objets … 3 aven…       75016 Pari…            160
+##  9 Voir… Trottoi… 185b r…       75018 Pari…            180
+## 10 Prop… Malprop… 138 ru…       75020 Pari…            200
 ## # ... with 343,632 more rows, and 10 more variables: DATEDECL &lt;dttm&gt;,
 ## #   `ANNEE DECLARATION` &lt;int&gt;, `MOIS DECLARATION` &lt;int&gt;, NUMERO &lt;dbl&gt;,
 ## #   PREFIXE &lt;chr&gt;, INTERVENANT &lt;chr&gt;, `CONSEIL DE QUARTIER` &lt;chr&gt;,
@@ -303,16 +304,16 @@ select(df_dmr, 3:7)
 ## # A tibble: 343,642 x 5
 ##    ADRESSE           CODE_POSTAL VILLE  ARRONDISSEMENT DATEDECL           
 ##    &lt;chr&gt;                   &lt;int&gt; &lt;chr&gt;           &lt;dbl&gt; &lt;dttm&gt;             
-##  1 16 rue de l'oril…       75011 Paris…             11 2017-12-02 01:00:00
-##  2 15 rue joseph di…       75018 Paris…             18 2017-11-30 01:00:00
-##  3 16 rue archereau…       75019 Paris…             19 2017-12-03 01:00:00
-##  4 15 rue réaumur, …       75003 Paris…              3 2017-12-04 01:00:00
-##  5 24 rue custine, …       75018 Paris…             18 2017-12-03 01:00:00
-##  6 9 villa virginie…       75014 Paris…             14 2017-10-15 02:00:00
-##  7 19 rue de mont-l…       75011 Paris…             11 2017-12-02 01:00:00
-##  8 3 avenue boudon,…       75016 Paris…             16 2017-12-05 01:00:00
-##  9 185b rue ordener…       75018 Paris…             18 2017-07-17 02:00:00
-## 10 138 rue pellepor…       75020 Paris…             20 2017-12-05 01:00:00
+##  1 16 rue de l'oril…       75011 Paris…            110 2017-12-02 01:00:00
+##  2 15 rue joseph di…       75018 Paris…            180 2017-11-30 01:00:00
+##  3 16 rue archereau…       75019 Paris…            190 2017-12-03 01:00:00
+##  4 15 rue réaumur, …       75003 Paris…             30 2017-12-04 01:00:00
+##  5 24 rue custine, …       75018 Paris…            180 2017-12-03 01:00:00
+##  6 9 villa virginie…       75014 Paris…            140 2017-10-15 02:00:00
+##  7 19 rue de mont-l…       75011 Paris…            110 2017-12-02 01:00:00
+##  8 3 avenue boudon,…       75016 Paris…            160 2017-12-05 01:00:00
+##  9 185b rue ordener…       75018 Paris…            180 2017-07-17 02:00:00
+## 10 138 rue pellepor…       75020 Paris…            200 2017-12-05 01:00:00
 ## # ... with 343,632 more rows
 ```
 ]
@@ -336,16 +337,16 @@ select(df_dmr, -(4:7), - SOUSTYPE)
 ## # A tibble: 343,642 x 11
 ##    TYPE  ADRESSE `ANNEE DECLARAT… `MOIS DECLARATI… NUMERO PREFIXE
 ##    &lt;chr&gt; &lt;chr&gt;              &lt;int&gt;            &lt;int&gt;  &lt;dbl&gt; &lt;chr&gt;  
-##  1 Mobi… 16 rue…             2017               12    576 S      
-##  2 Obje… 15 rue…             2017               11   9444 A      
-##  3 Obje… 16 rue…             2017               12    696 G      
-##  4 Voir… 15 rue…             2017               12   1259 A      
-##  5 Prop… 24 rue…             2017               12    818 S      
-##  6 Mobi… 9 vill…             2017               10   5376 G      
-##  7 Obje… 19 rue…             2017               12    525 G      
-##  8 Obje… 3 aven…             2017               12   1533 S      
-##  9 Voir… 185b r…             2017                7   4433 S      
-## 10 Prop… 138 ru…             2017               12   1653 S      
+##  1 Mobi… 16 rue…             2017               12   5760 S      
+##  2 Obje… 15 rue…             2017               11  94440 A      
+##  3 Obje… 16 rue…             2017               12   6960 G      
+##  4 Voir… 15 rue…             2017               12  12590 A      
+##  5 Prop… 24 rue…             2017               12   8180 S      
+##  6 Mobi… 9 vill…             2017               10  53760 G      
+##  7 Obje… 19 rue…             2017               12   5250 G      
+##  8 Obje… 3 aven…             2017               12  15330 S      
+##  9 Voir… 185b r…             2017                7  44330 S      
+## 10 Prop… 138 ru…             2017               12  16530 S      
 ## # ... with 343,632 more rows, and 5 more variables: INTERVENANT &lt;chr&gt;,
 ## #   `CONSEIL DE QUARTIER` &lt;chr&gt;, OBJECTID &lt;int&gt;, geo_shape &lt;chr&gt;,
 ## #   geo_point_2d &lt;chr&gt;
@@ -390,16 +391,16 @@ select(df_dmr, starts_with("A"))
 ## # A tibble: 343,642 x 3
 ##    ADRESSE                           ARRONDISSEMENT `ANNEE DECLARATION`
 ##    &lt;chr&gt;                                      &lt;dbl&gt;               &lt;int&gt;
-##  1 16 rue de l'orillon, 75011 PARIS              11                2017
-##  2 15 rue joseph dijon, 75018 PARIS              18                2017
-##  3 16 rue archereau, 75019 PARIS                 19                2017
-##  4 15 rue réaumur, 75003 PARIS                    3                2017
-##  5 24 rue custine, 75018 PARIS                   18                2017
-##  6 9 villa virginie, 75014 PARIS                 14                2017
-##  7 19 rue de mont-louis, 75011 PARIS             11                2017
-##  8 3 avenue boudon, 75016 PARIS                  16                2017
-##  9 185b rue ordener, 75018 PARIS                 18                2017
-## 10 138 rue pelleport, 75020 PARIS                20                2017
+##  1 16 rue de l'orillon, 75011 PARIS             110                2017
+##  2 15 rue joseph dijon, 75018 PARIS             180                2017
+##  3 16 rue archereau, 75019 PARIS                190                2017
+##  4 15 rue réaumur, 75003 PARIS                   30                2017
+##  5 24 rue custine, 75018 PARIS                  180                2017
+##  6 9 villa virginie, 75014 PARIS                140                2017
+##  7 19 rue de mont-louis, 75011 PARIS            110                2017
+##  8 3 avenue boudon, 75016 PARIS                 160                2017
+##  9 185b rue ordener, 75018 PARIS                180                2017
+## 10 138 rue pelleport, 75020 PARIS               200                2017
 ## # ... with 343,632 more rows
 ```
 ]
@@ -515,12 +516,12 @@ head(df_dmr_paris6)
 ## # A tibble: 6 x 16
 ##   TYPE  SOUSTYPE ADRESSE CODE_POSTAL VILLE ARRONDISSEMENT
 ##   &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
-## 1 Graf… Graffit… 1 rue …       75006 Pari…              6
-## 2 Prob… Chantie… 25 rue…       75006 Pari…              6
-## 3 Prop… Malprop… 2 rue …       75006 Pari…              6
-## 4 Voir… Trottoi… 6 plac…       75006 Pari…              6
-## 5 Obje… Épave d… place …       75006 Pari…              6
-## 6 Voir… Station… 15 rue…       75006 Pari…              6
+## 1 Graf… Graffit… 1 rue …       75006 Pari…             60
+## 2 Prob… Chantie… 25 rue…       75006 Pari…             60
+## 3 Prop… Malprop… 2 rue …       75006 Pari…             60
+## 4 Voir… Trottoi… 6 plac…       75006 Pari…             60
+## 5 Obje… Épave d… place …       75006 Pari…             60
+## 6 Voir… Station… 15 rue…       75006 Pari…             60
 ## # ... with 10 more variables: DATEDECL &lt;dttm&gt;, `ANNEE DECLARATION` &lt;int&gt;,
 ## #   `MOIS DECLARATION` &lt;int&gt;, NUMERO &lt;dbl&gt;, PREFIXE &lt;chr&gt;,
 ## #   INTERVENANT &lt;chr&gt;, `CONSEIL DE QUARTIER` &lt;chr&gt;, OBJECTID &lt;int&gt;,
@@ -561,16 +562,16 @@ filter(df_dmr, CODE_POSTAL == 75006 &amp; `ANNEE DECLARATION` == 2018)
 ## # A tibble: 359 x 16
 ##    TYPE  SOUSTYPE ADRESSE CODE_POSTAL VILLE ARRONDISSEMENT
 ##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
-##  1 Obje… Épave d… place …       75006 Pari…              6
-##  2 Voir… Station… 15 rue…       75006 Pari…              6
-##  3 Eau … Dysfonc… 62 rue…       75006 Pari…              6
-##  4 Graf… Graffit… 8 rue …       75006 Pari…              6
-##  5 Obje… Autre o… 12 rue…       75006 Pari…              6
-##  6 Prob… Chantie… 9 rue …       75006 Pari…              6
-##  7 Graf… Graffit… 19 rue…       75006 Pari…              6
-##  8 Prop… Malprop… 9 rue …       75006 Pari…              6
-##  9 Voir… Station… 16 rue…       75006 Pari…              6
-## 10 Arbr… Problèm… 32 rue…       75006 Pari…              6
+##  1 Obje… Épave d… place …       75006 Pari…             60
+##  2 Voir… Station… 15 rue…       75006 Pari…             60
+##  3 Eau … Dysfonc… 62 rue…       75006 Pari…             60
+##  4 Graf… Graffit… 8 rue …       75006 Pari…             60
+##  5 Obje… Autre o… 12 rue…       75006 Pari…             60
+##  6 Prob… Chantie… 9 rue …       75006 Pari…             60
+##  7 Graf… Graffit… 19 rue…       75006 Pari…             60
+##  8 Prop… Malprop… 9 rue …       75006 Pari…             60
+##  9 Voir… Station… 16 rue…       75006 Pari…             60
+## 10 Arbr… Problèm… 32 rue…       75006 Pari…             60
 ## # ... with 349 more rows, and 10 more variables: DATEDECL &lt;dttm&gt;, `ANNEE
 ## #   DECLARATION` &lt;int&gt;, `MOIS DECLARATION` &lt;int&gt;, NUMERO &lt;dbl&gt;,
 ## #   PREFIXE &lt;chr&gt;, INTERVENANT &lt;chr&gt;, `CONSEIL DE QUARTIER` &lt;chr&gt;,
@@ -605,16 +606,16 @@ filter(df_dmr, CODE_POSTAL == 75006 | CODE_POSTAL == 75007)
 ## # A tibble: 13,668 x 16
 ##    TYPE  SOUSTYPE ADRESSE CODE_POSTAL VILLE ARRONDISSEMENT
 ##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
-##  1 Prop… Malprop… 20 rue…       75007 Pari…              7
-##  2 Graf… Graffit… 23 rue…       75007 Pari…              7
-##  3 Graf… Graffit… 1 rue …       75006 Pari…              6
-##  4 Mobi… Autres … 20 ave…       75007 Pari…              7
-##  5 Mobi… Mobilie… avenue…       75007 Pari…              7
-##  6 Obje… Planche… 8 rue …       75007 Pari…              7
-##  7 Prob… Chantie… 25 rue…       75006 Pari…              6
-##  8 Prop… Malprop… 46 ave…       75007 Pari…              7
-##  9 Prop… Malprop… boulev…       75007 Pari…              7
-## 10 Obje… Autre o… avenue…       75007 Pari…              7
+##  1 Prop… Malprop… 20 rue…       75007 Pari…             70
+##  2 Graf… Graffit… 23 rue…       75007 Pari…             70
+##  3 Graf… Graffit… 1 rue …       75006 Pari…             60
+##  4 Mobi… Autres … 20 ave…       75007 Pari…             70
+##  5 Mobi… Mobilie… avenue…       75007 Pari…             70
+##  6 Obje… Planche… 8 rue …       75007 Pari…             70
+##  7 Prob… Chantie… 25 rue…       75006 Pari…             60
+##  8 Prop… Malprop… 46 ave…       75007 Pari…             70
+##  9 Prop… Malprop… boulev…       75007 Pari…             70
+## 10 Obje… Autre o… avenue…       75007 Pari…             70
 ## # ... with 13,658 more rows, and 10 more variables: DATEDECL &lt;dttm&gt;,
 ## #   `ANNEE DECLARATION` &lt;int&gt;, `MOIS DECLARATION` &lt;int&gt;, NUMERO &lt;dbl&gt;,
 ## #   PREFIXE &lt;chr&gt;, INTERVENANT &lt;chr&gt;, `CONSEIL DE QUARTIER` &lt;chr&gt;,
@@ -641,16 +642,16 @@ filter(df_dmr, !(CODE_POSTAL == 75006))
 ## # A tibble: 337,750 x 16
 ##    TYPE  SOUSTYPE ADRESSE CODE_POSTAL VILLE ARRONDISSEMENT
 ##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
-##  1 Mobi… Mobilie… 16 rue…       75011 Pari…             11
-##  2 Obje… Gravats… 15 rue…       75018 Pari…             18
-##  3 Obje… Meubles… 16 rue…       75019 Pari…             19
-##  4 Voir… Station… 15 rue…       75003 Pari…              3
-##  5 Prop… Malprop… 24 rue…       75018 Pari…             18
-##  6 Mobi… Mobilie… 9 vill…       75014 Pari…             14
-##  7 Obje… Planche… 19 rue…       75011 Pari…             11
-##  8 Obje… Objets … 3 aven…       75016 Pari…             16
-##  9 Voir… Trottoi… 185b r…       75018 Pari…             18
-## 10 Prop… Malprop… 138 ru…       75020 Pari…             20
+##  1 Mobi… Mobilie… 16 rue…       75011 Pari…            110
+##  2 Obje… Gravats… 15 rue…       75018 Pari…            180
+##  3 Obje… Meubles… 16 rue…       75019 Pari…            190
+##  4 Voir… Station… 15 rue…       75003 Pari…             30
+##  5 Prop… Malprop… 24 rue…       75018 Pari…            180
+##  6 Mobi… Mobilie… 9 vill…       75014 Pari…            140
+##  7 Obje… Planche… 19 rue…       75011 Pari…            110
+##  8 Obje… Objets … 3 aven…       75016 Pari…            160
+##  9 Voir… Trottoi… 185b r…       75018 Pari…            180
+## 10 Prop… Malprop… 138 ru…       75020 Pari…            200
 ## # ... with 337,740 more rows, and 10 more variables: DATEDECL &lt;dttm&gt;,
 ## #   `ANNEE DECLARATION` &lt;int&gt;, `MOIS DECLARATION` &lt;int&gt;, NUMERO &lt;dbl&gt;,
 ## #   PREFIXE &lt;chr&gt;, INTERVENANT &lt;chr&gt;, `CONSEIL DE QUARTIER` &lt;chr&gt;,
@@ -678,16 +679,16 @@ filter(df_dmr, CODE_POSTAL %in% c(75006, 75008))
 ## # A tibble: 10,768 x 16
 ##    TYPE  SOUSTYPE ADRESSE CODE_POSTAL VILLE ARRONDISSEMENT
 ##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
-##  1 Prop… Malprop… 38 rue…       75008 Pari…              8
-##  2 Graf… Graffit… 1 rue …       75006 Pari…              6
-##  3 Prob… Chantie… 25 rue…       75006 Pari…              6
-##  4 Arbr… Problèm… jardin…       75008 Pari…              8
-##  5 Prop… Malprop… 2 rue …       75006 Pari…              6
-##  6 Voir… Trottoi… 6 plac…       75006 Pari…              6
-##  7 Prop… Malprop… 22 rue…       75008 Pari…              8
-##  8 Voir… Gênes à… 19 rue…       75008 Pari…              8
-##  9 Obje… Épave d… place …       75006 Pari…              6
-## 10 Voir… Station… 15 rue…       75006 Pari…              6
+##  1 Prop… Malprop… 38 rue…       75008 Pari…             80
+##  2 Graf… Graffit… 1 rue …       75006 Pari…             60
+##  3 Prob… Chantie… 25 rue…       75006 Pari…             60
+##  4 Arbr… Problèm… jardin…       75008 Pari…             80
+##  5 Prop… Malprop… 2 rue …       75006 Pari…             60
+##  6 Voir… Trottoi… 6 plac…       75006 Pari…             60
+##  7 Prop… Malprop… 22 rue…       75008 Pari…             80
+##  8 Voir… Gênes à… 19 rue…       75008 Pari…             80
+##  9 Obje… Épave d… place …       75006 Pari…             60
+## 10 Voir… Station… 15 rue…       75006 Pari…             60
 ## # ... with 10,758 more rows, and 10 more variables: DATEDECL &lt;dttm&gt;,
 ## #   `ANNEE DECLARATION` &lt;int&gt;, `MOIS DECLARATION` &lt;int&gt;, NUMERO &lt;dbl&gt;,
 ## #   PREFIXE &lt;chr&gt;, INTERVENANT &lt;chr&gt;, `CONSEIL DE QUARTIER` &lt;chr&gt;,
@@ -714,16 +715,16 @@ df_dmr
 ## # A tibble: 343,642 x 16
 ##    TYPE  SOUSTYPE ADRESSE CODE_POSTAL VILLE ARRONDISSEMENT
 ##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
-##  1 Mobi… Mobilie… 16 rue…       75011 Pari…             11
-##  2 Obje… Gravats… 15 rue…       75018 Pari…             18
-##  3 Obje… Meubles… 16 rue…       75019 Pari…             19
-##  4 Voir… Station… 15 rue…       75003 Pari…              3
-##  5 Prop… Malprop… 24 rue…       75018 Pari…             18
-##  6 Mobi… Mobilie… 9 vill…       75014 Pari…             14
-##  7 Obje… Planche… 19 rue…       75011 Pari…             11
-##  8 Obje… Objets … 3 aven…       75016 Pari…             16
-##  9 Voir… Trottoi… 185b r…       75018 Pari…             18
-## 10 Prop… Malprop… 138 ru…       75020 Pari…             20
+##  1 Mobi… Mobilie… 16 rue…       75011 Pari…            110
+##  2 Obje… Gravats… 15 rue…       75018 Pari…            180
+##  3 Obje… Meubles… 16 rue…       75019 Pari…            190
+##  4 Voir… Station… 15 rue…       75003 Pari…             30
+##  5 Prop… Malprop… 24 rue…       75018 Pari…            180
+##  6 Mobi… Mobilie… 9 vill…       75014 Pari…            140
+##  7 Obje… Planche… 19 rue…       75011 Pari…            110
+##  8 Obje… Objets … 3 aven…       75016 Pari…            160
+##  9 Voir… Trottoi… 185b r…       75018 Pari…            180
+## 10 Prop… Malprop… 138 ru…       75020 Pari…            200
 ## # ... with 343,632 more rows, and 10 more variables: DATEDECL &lt;dttm&gt;,
 ## #   `ANNEE DECLARATION` &lt;int&gt;, `MOIS DECLARATION` &lt;int&gt;, NUMERO &lt;dbl&gt;,
 ## #   PREFIXE &lt;chr&gt;, INTERVENANT &lt;chr&gt;, `CONSEIL DE QUARTIER` &lt;chr&gt;,
@@ -743,16 +744,16 @@ arrange(df_dmr, CODE_POSTAL)
 ## # A tibble: 343,642 x 16
 ##    TYPE  SOUSTYPE ADRESSE CODE_POSTAL VILLE ARRONDISSEMENT
 ##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
-##  1 Obje… Objets … 12 rue…       75001 Pari…              1
-##  2 Prop… Malprop… 23 Rue…       75001 Pari…              1
-##  3 Graf… Affiche… 12 rue…       75001 Pari…              1
-##  4 Graf… Graffit… 3 rue …       75001 Pari…              1
-##  5 Graf… Graffit… 11 rue…       75001 Pari…              1
-##  6 Graf… Graffit… place …       75001 Pari…              1
-##  7 Du v… Pot ou … 296  r…       75001 Pari…              1
-##  8 Obje… Autre o… 17 rue…       75001 Pari…              1
-##  9 Écla… Fils él… 1 rue …       75001 Pari…              1
-## 10 Graf… Graffit… 20 rue…       75001 Pari…              1
+##  1 Obje… Objets … 12 rue…       75001 Pari…             10
+##  2 Prop… Malprop… 23 Rue…       75001 Pari…             10
+##  3 Graf… Affiche… 12 rue…       75001 Pari…             10
+##  4 Graf… Graffit… 3 rue …       75001 Pari…             10
+##  5 Graf… Graffit… 11 rue…       75001 Pari…             10
+##  6 Graf… Graffit… place …       75001 Pari…             10
+##  7 Du v… Pot ou … 296  r…       75001 Pari…             10
+##  8 Obje… Autre o… 17 rue…       75001 Pari…             10
+##  9 Écla… Fils él… 1 rue …       75001 Pari…             10
+## 10 Graf… Graffit… 20 rue…       75001 Pari…             10
 ## # ... with 343,632 more rows, and 10 more variables: DATEDECL &lt;dttm&gt;,
 ## #   `ANNEE DECLARATION` &lt;int&gt;, `MOIS DECLARATION` &lt;int&gt;, NUMERO &lt;dbl&gt;,
 ## #   PREFIXE &lt;chr&gt;, INTERVENANT &lt;chr&gt;, `CONSEIL DE QUARTIER` &lt;chr&gt;,
@@ -779,16 +780,16 @@ arrange(df_dmr, CODE_POSTAL)
 ## # A tibble: 343,642 x 16
 ##    TYPE  SOUSTYPE ADRESSE CODE_POSTAL VILLE ARRONDISSEMENT
 ##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
-##  1 Obje… Objets … 12 rue…       75001 Pari…              1
-##  2 Prop… Malprop… 23 Rue…       75001 Pari…              1
-##  3 Graf… Affiche… 12 rue…       75001 Pari…              1
-##  4 Graf… Graffit… 3 rue …       75001 Pari…              1
-##  5 Graf… Graffit… 11 rue…       75001 Pari…              1
-##  6 Graf… Graffit… place …       75001 Pari…              1
-##  7 Du v… Pot ou … 296  r…       75001 Pari…              1
-##  8 Obje… Autre o… 17 rue…       75001 Pari…              1
-##  9 Écla… Fils él… 1 rue …       75001 Pari…              1
-## 10 Graf… Graffit… 20 rue…       75001 Pari…              1
+##  1 Obje… Objets … 12 rue…       75001 Pari…             10
+##  2 Prop… Malprop… 23 Rue…       75001 Pari…             10
+##  3 Graf… Affiche… 12 rue…       75001 Pari…             10
+##  4 Graf… Graffit… 3 rue …       75001 Pari…             10
+##  5 Graf… Graffit… 11 rue…       75001 Pari…             10
+##  6 Graf… Graffit… place …       75001 Pari…             10
+##  7 Du v… Pot ou … 296  r…       75001 Pari…             10
+##  8 Obje… Autre o… 17 rue…       75001 Pari…             10
+##  9 Écla… Fils él… 1 rue …       75001 Pari…             10
+## 10 Graf… Graffit… 20 rue…       75001 Pari…             10
 ## # ... with 343,632 more rows, and 10 more variables: DATEDECL &lt;dttm&gt;,
 ## #   `ANNEE DECLARATION` &lt;int&gt;, `MOIS DECLARATION` &lt;int&gt;, NUMERO &lt;dbl&gt;,
 ## #   PREFIXE &lt;chr&gt;, INTERVENANT &lt;chr&gt;, `CONSEIL DE QUARTIER` &lt;chr&gt;,
@@ -808,16 +809,16 @@ arrange(df_dmr, CODE_POSTAL, TYPE)
 ## # A tibble: 343,642 x 16
 ##    TYPE  SOUSTYPE ADRESSE CODE_POSTAL VILLE ARRONDISSEMENT
 ##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
-##  1 Arbr… Problèm… 9 rue …       75001 Pari…              1
-##  2 Arbr… Problèm… 10 rue…       75001 Pari…              1
-##  3 Arbr… Problèm… 4 plac…       75001 Pari…              1
-##  4 Arbr… Problèm… rue be…       75001 Pari…              1
-##  5 Arbr… Problèm… 67 rue…       75001 Pari…              1
-##  6 Arbr… Problèm… rue de…       75001 Pari…              1
-##  7 Arbr… Problèm… 38 rue…       75001 Pari…              1
-##  8 Arbr… Problèm… 53 rue…       75001 Pari…              1
-##  9 Arbr… Problèm… 22 rue…       75001 Pari…              1
-## 10 Arbr… Problèm… place …       75001 Pari…              1
+##  1 Arbr… Problèm… 9 rue …       75001 Pari…             10
+##  2 Arbr… Problèm… 10 rue…       75001 Pari…             10
+##  3 Arbr… Problèm… 4 plac…       75001 Pari…             10
+##  4 Arbr… Problèm… rue be…       75001 Pari…             10
+##  5 Arbr… Problèm… 67 rue…       75001 Pari…             10
+##  6 Arbr… Problèm… rue de…       75001 Pari…             10
+##  7 Arbr… Problèm… 38 rue…       75001 Pari…             10
+##  8 Arbr… Problèm… 53 rue…       75001 Pari…             10
+##  9 Arbr… Problèm… 22 rue…       75001 Pari…             10
+## 10 Arbr… Problèm… place …       75001 Pari…             10
 ## # ... with 343,632 more rows, and 10 more variables: DATEDECL &lt;dttm&gt;,
 ## #   `ANNEE DECLARATION` &lt;int&gt;, `MOIS DECLARATION` &lt;int&gt;, NUMERO &lt;dbl&gt;,
 ## #   PREFIXE &lt;chr&gt;, INTERVENANT &lt;chr&gt;, `CONSEIL DE QUARTIER` &lt;chr&gt;,
@@ -844,16 +845,16 @@ arrange(df_dmr, CODE_POSTAL, TYPE)
 ## # A tibble: 343,642 x 16
 ##    TYPE  SOUSTYPE ADRESSE CODE_POSTAL VILLE ARRONDISSEMENT
 ##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
-##  1 Arbr… Problèm… 9 rue …       75001 Pari…              1
-##  2 Arbr… Problèm… 10 rue…       75001 Pari…              1
-##  3 Arbr… Problèm… 4 plac…       75001 Pari…              1
-##  4 Arbr… Problèm… rue be…       75001 Pari…              1
-##  5 Arbr… Problèm… 67 rue…       75001 Pari…              1
-##  6 Arbr… Problèm… rue de…       75001 Pari…              1
-##  7 Arbr… Problèm… 38 rue…       75001 Pari…              1
-##  8 Arbr… Problèm… 53 rue…       75001 Pari…              1
-##  9 Arbr… Problèm… 22 rue…       75001 Pari…              1
-## 10 Arbr… Problèm… place …       75001 Pari…              1
+##  1 Arbr… Problèm… 9 rue …       75001 Pari…             10
+##  2 Arbr… Problèm… 10 rue…       75001 Pari…             10
+##  3 Arbr… Problèm… 4 plac…       75001 Pari…             10
+##  4 Arbr… Problèm… rue be…       75001 Pari…             10
+##  5 Arbr… Problèm… 67 rue…       75001 Pari…             10
+##  6 Arbr… Problèm… rue de…       75001 Pari…             10
+##  7 Arbr… Problèm… 38 rue…       75001 Pari…             10
+##  8 Arbr… Problèm… 53 rue…       75001 Pari…             10
+##  9 Arbr… Problèm… 22 rue…       75001 Pari…             10
+## 10 Arbr… Problèm… place …       75001 Pari…             10
 ## # ... with 343,632 more rows, and 10 more variables: DATEDECL &lt;dttm&gt;,
 ## #   `ANNEE DECLARATION` &lt;int&gt;, `MOIS DECLARATION` &lt;int&gt;, NUMERO &lt;dbl&gt;,
 ## #   PREFIXE &lt;chr&gt;, INTERVENANT &lt;chr&gt;, `CONSEIL DE QUARTIER` &lt;chr&gt;,
@@ -873,16 +874,16 @@ arrange(df_dmr, desc(CODE_POSTAL), TYPE)
 ## # A tibble: 343,642 x 16
 ##    TYPE  SOUSTYPE ADRESSE CODE_POSTAL VILLE ARRONDISSEMENT
 ##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;         &lt;int&gt; &lt;chr&gt;          &lt;dbl&gt;
-##  1 Arbr… Problèm… 174 ru…       75020 Pari…             20
-##  2 Arbr… Problèm… 84 bou…       75020 Pari…             20
-##  3 Arbr… Problèm… 353 ru…       75020 Pari…             20
-##  4 Arbr… Problèm… 6  rue…       75020 Pari…             20
-##  5 Arbr… Problèm… 5 rue …       75020 Pari…             20
-##  6 Arbr… Problèm… 20 rue…       75020 Pari…             20
-##  7 Arbr… Problèm… rue fr…       75020 Pari…             20
-##  8 Arbr… Problèm… 120 av…       75020 Pari…             20
-##  9 Arbr… Problèm… 50b  r…       75020 Pari…             20
-## 10 Arbr… Problèm… 74  bo…       75020 Pari…             20
+##  1 Arbr… Problèm… 174 ru…       75020 Pari…            200
+##  2 Arbr… Problèm… 84 bou…       75020 Pari…            200
+##  3 Arbr… Problèm… 353 ru…       75020 Pari…            200
+##  4 Arbr… Problèm… 6  rue…       75020 Pari…            200
+##  5 Arbr… Problèm… 5 rue …       75020 Pari…            200
+##  6 Arbr… Problèm… 20 rue…       75020 Pari…            200
+##  7 Arbr… Problèm… rue fr…       75020 Pari…            200
+##  8 Arbr… Problèm… 120 av…       75020 Pari…            200
+##  9 Arbr… Problèm… 50b  r…       75020 Pari…            200
+## 10 Arbr… Problèm… 74  bo…       75020 Pari…            200
 ## # ... with 343,632 more rows, and 10 more variables: DATEDECL &lt;dttm&gt;,
 ## #   `ANNEE DECLARATION` &lt;int&gt;, `MOIS DECLARATION` &lt;int&gt;, NUMERO &lt;dbl&gt;,
 ## #   PREFIXE &lt;chr&gt;, INTERVENANT &lt;chr&gt;, `CONSEIL DE QUARTIER` &lt;chr&gt;,
@@ -1415,12 +1416,12 @@ df_dmr_renamed_muted %&gt;%
 ## # A tibble: 6 x 3
 ##   ARRONDISSEMENT NbDeclarationTotal NbDeclarationAnnuel
 ##            &lt;dbl&gt;              &lt;int&gt;               &lt;dbl&gt;
-## 1              1               3638                520.
-## 2              2               5724                818.
-## 3              3              10464               1495.
-## 4              4               7871               1124.
-## 5              5               8592               1227.
-## 6              6               5882                840.
+## 1             10               3638                520.
+## 2             20               5724                818.
+## 3             30              10464               1495.
+## 4             40               7871               1124.
+## 5             50               8592               1227.
+## 6             60               5882                840.
 ```
 ]
 
@@ -1839,7 +1840,11 @@ library(tidyverse)
 
 ```r
 # Lecture du jeu de données
-df_dmr &lt;- read_delim(file = "data/dans-ma-rue.csv", delim = ";") 
+df_dmr &lt;- read_csv2(file = "data/dans-ma-rue.zip") 
+```
+
+```
+## Using ',' as decimal and '.' as grouping mark. Use read_delim() for more control.
 ```
 
 ```
@@ -1850,11 +1855,11 @@ df_dmr &lt;- read_delim(file = "data/dans-ma-rue.csv", delim = ";")
 ##   ADRESSE = col_character(),
 ##   CODE_POSTAL = col_integer(),
 ##   VILLE = col_character(),
-##   ARRONDISSEMENT = col_double(),
+##   ARRONDISSEMENT = col_number(),
 ##   DATEDECL = col_datetime(format = ""),
 ##   `ANNEE DECLARATION` = col_integer(),
 ##   `MOIS DECLARATION` = col_integer(),
-##   NUMERO = col_double(),
+##   NUMERO = col_number(),
 ##   PREFIXE = col_character(),
 ##   INTERVENANT = col_character(),
 ##   `CONSEIL DE QUARTIER` = col_character(),
@@ -1894,16 +1899,16 @@ df_dmr_clean
 ## # A tibble: 343,642 x 10
 ##    TYPE  SOUSTYPE ADRESSE CODE_POSTAL ARRONDISSEMENT ANNEE_DECLARATI…
 ##    &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;                &lt;dbl&gt;            &lt;int&gt;
-##  1 Voir… Panneau… 210 ru… 75001                    1             2012
-##  2 Obje… Planche… 227 Ru… 75001                    1             2012
-##  3 Voir… Marquag… 220 Ru… 75001                    1             2012
-##  4 Prop… Malprop… 210 ru… 75001                    1             2012
-##  5 Voir… Marquag… 210 ru… 75001                    1             2012
-##  6 Voir… Marquag… 210 ru… 75001                    1             2012
-##  7 Prop… Malprop… 19-21 … 75004                    4             2012
-##  8 Obje… Équipem… 1 rue … 75004                    4             2012
-##  9 Voir… Marquag… 3 boul… 75004                    4             2012
-## 10 Prop… Malprop… 19-21 … 75004                    4             2012
+##  1 Voir… Panneau… 210 ru… 75001                   10             2012
+##  2 Obje… Planche… 227 Ru… 75001                   10             2012
+##  3 Voir… Marquag… 220 Ru… 75001                   10             2012
+##  4 Prop… Malprop… 210 ru… 75001                   10             2012
+##  5 Voir… Marquag… 210 ru… 75001                   10             2012
+##  6 Voir… Marquag… 210 ru… 75001                   10             2012
+##  7 Prop… Malprop… 19-21 … 75004                   40             2012
+##  8 Obje… Équipem… 1 rue … 75004                   40             2012
+##  9 Voir… Marquag… 3 boul… 75004                   40             2012
+## 10 Prop… Malprop… 19-21 … 75004                   40             2012
 ## # ... with 343,632 more rows, and 4 more variables:
 ## #   MOIS_DECLARATION &lt;int&gt;, GEO_POINT_2D &lt;chr&gt;, TRIMESTRE &lt;chr&gt;,
 ## #   TRIMESTRE_DECLARATION &lt;chr&gt;
