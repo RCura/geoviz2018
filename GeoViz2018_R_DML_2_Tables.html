@@ -50,7 +50,6 @@ Autre :
 ]
 
 
-
 ---
 name: lecture-table
 ## Lecture de tables : `readr`
@@ -2108,7 +2107,7 @@ ggplot(donnees_finales_completes) +
   scale_y_continuous(labels = scales::percent)
 ```
 
-&lt;img src="GeoViz2018_R_DML_2_Tables_files/figure-html/unnamed-chunk-65-1.png" width="768" /&gt;
+![](GeoViz2018_R_DML_2_Tables_files/figure-html/unnamed-chunk-65-1.png)&lt;!-- --&gt;
 ]
 
 ---
@@ -2129,17 +2128,12 @@ name: supports
 .center[
 www.rstudio.com/resources/cheatsheets/#dplyr
 ]
-
----
-## Où trouver de la documentation/aide ?
-
-- Articles rstudio
-- Blogs ? Lesquels ?
-- Livres
     </textarea>
-<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
-<script src="macros.js"></script>
-<script>var slideshow = remark.create();
+<script src="www/libs/remark.min.js"></script>
+<script src="www/macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true
+});
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
 });

@@ -1,14 +1,18 @@
 ---
 title: "Manipulation de données avec R"
 subtitle: "2 - Manipulation de tableaux"
-author: "Robin Cura, Hélène Mathian & Lise Vaudor<br/>d'après L. Vaudor : <u><a href='http://perso.ens-lyon.fr/lise.vaudor/formations/'>Formation startR (2018)</a></u>"
+author: "Robin Cura & Lise Vaudor<br/>d'après L. Vaudor : <u><a href='http://perso.ens-lyon.fr/lise.vaudor/formations/'>Formation startR (2018)</a></u>"
 date: ["15/10/2018<br/><br /> École Thématique GeoViz 2018 "]
 output:
   xaringan::moon_reader:
+    chakra: "www/libs/remark.min.js"
     lib_dir: "www/libs"
     css: ["www/xaringan-themer.css", "www/style.css"]
     nature:
-        beforeInit: "macros.js"
+        beforeInit: "www/macros.js"
+        highlightLines: true
+editor_options: 
+  chunk_output_type: console
 ---
 ```{r xaringan-themer, include = FALSE}
 library(tidyverse)
@@ -55,7 +59,6 @@ Autre :
 - [Un exercice complet d'application](#exercice)
 - [Trouver de la documentation](#supports)
 ]
-
 
 
 ---
@@ -344,7 +347,7 @@ name: arrange
 ![:scale 40%](www/img/dplyr_arrange.png)
 ]
 
-Pour réarranger un tableau selon l'ordre d'une variable, on peut faire appel à la fonction `arrange` : 
+Pour trier un tableau selon l'ordre d'une variable (réarranger les lignes d'un tableau), on peut faire appel à la fonction `arrange` : 
 
 .pull-left[
 .tiny[
@@ -508,7 +511,7 @@ Ré-organiser des données ne suffit généralement pas pour les adapter à une 
 - #### `rename()` permet de **renommer** des colonnes
 - #### `mutate()` permet de **créer et ajouter de nouvelles variables** (colonnes)
 - #### `group_by()` permet de réaliser **des agrégations**
-- #### `summarise()` permet de **résumer plusieurs valeurs en une seule**, en particulier à partir d'un tableau agrégé par `group_by()` 
+- #### `summarise()` permet de **calculer un résumé statistique**, en particulier au cours de la création d'un tableau agrégé par `group_by()` 
 - #### `left_join()`, `inner_join()` etc. permettent de réaliser des **jointures**
 
 ---
@@ -1121,10 +1124,3 @@ name: supports
 .center[
 www.rstudio.com/resources/cheatsheets/#dplyr
 ]
-
----
-## Où trouver de la documentation/aide ?
-
-- Articles rstudio
-- Blogs ? Lesquels ?
-- Livres
