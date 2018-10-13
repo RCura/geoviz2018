@@ -5,10 +5,11 @@ author: "Robin Cura, Hélène Mathian & Lise Vaudor"
 date: ["16/10/2018<br/><br /> École Thématique GeoViz 2018 "]
 output:
   xaringan::moon_reader:
+    chakra: "www/libs/remark.min.js"
     lib_dir: "www/libs"
     css: ["www/xaringan-themer.css", "www/style.css"]
     nature:
-        beforeInit: "macros.js"
+        beforeInit: "www/macros.js"
         highlightLines: true
 editor_options: 
   chunk_output_type: console
@@ -75,7 +76,7 @@ Cartographier avec R
 
 
 Deux formats de données spatiales coexistent :
-  - `sp`, le format le plus ancien et répendu
+  - `sp`, le format le plus ancien et répandu
   - `sf`, un format plus récent, puissant, mais pas encore universel
   
 .pull-left[
@@ -83,7 +84,7 @@ Deux formats de données spatiales coexistent :
 ```{r, message = FALSE}
 library(rgdal)
 library(sp)
-iris_Paris_sp <- readOGR("data/IRIS_Paris_L93.shp",
+iris_Paris_sp <- readOGR("data/ParisIris2017.shp",
                          stringsAsFactors = FALSE)
 ```
 ]
@@ -95,7 +96,7 @@ iris_Paris_sp <- readOGR("data/IRIS_Paris_L93.shp",
 .smaller[
 ```{r}
 library(sf)
-iris_Paris_sf <- st_read("data/IRIS_Paris_L93.shp",
+iris_Paris_sf <- st_read("data/ParisIris2017.shp",
                          stringsAsFactors = FALSE)
 str(iris_Paris_sf)
 ```
@@ -167,7 +168,7 @@ name: lecture-sf
 - Lecture d'un shapefile
 .small[
 ```{r}
-irisIDF <- st_read(dsn = "data/IRIS_Paris_L93.shp", 
+irisParis <- st_read(dsn = "data/ParisIris2017.shp", 
                        stringsAsFactors = FALSE) # Comme pour la lecture des data.frame
 ```
 ]
@@ -179,7 +180,7 @@ name: projections-sf
 
 .small[
 ```{r}
-st_crs(irisIDF)
+st_crs(irisParis)
 ```
 ]
 
@@ -187,9 +188,9 @@ Ici, le "code de projection" est bien reconnu, mais le code EPSG n'est pas rense
 
 .small[
 ```{r}
-irisIDF <- irisIDF %>%
+irisParis <- irisParis %>%
   st_set_crs(2154) # SRID/EPSG du Lambert 93
-head(irisIDF)
+head(irisParis)
 ```
 ]
 
@@ -201,7 +202,7 @@ head(irisIDF)
 .pull-left[
 .small[
 ```{r}
-irisIDF %>%
+irisParis %>%
   select(geometry) %>% # Lambert 93
   plot()
 ```
@@ -213,7 +214,7 @@ irisIDF %>%
 ```{r}
 GallPeters <- "+proj=cea +lon_0=0 +lat_ts=45 \
   +x_0=0 +y_0=0 +ellps=WGS84 +units=m +no_defs"
-irisIDF %>%
+irisParis %>%
   select(geometry) %>%
   st_transform(crs = GallPeters) %>% #<<
   plot()
@@ -229,7 +230,7 @@ On peut utiliser la fonction de base `plot()`, qui affiche alors l'ensemble des 
 
 .small[
 ```{r, fig.width = 12, fig.height = 5}
-plot(irisIDF)
+plot(irisParis)
 ```
 ]
 
@@ -240,7 +241,7 @@ Pour "cartographier" le contenu d'une seule variable :
 
 .small[
 ```{r, fig.width = 12, fig.height = 5}
-plot(irisIDF["Nom_Com"])
+plot(irisParis["NOM_C"])
 ```
 ]
 
@@ -253,7 +254,7 @@ Le *package* `mapview` permet de mener rapidement une exploration des données s
 .small[
 ```{r, message = FALSE, fig.width=10, fig.height = 5}
 library(mapview) # install.packages("mapview")
-mapview(irisIDF)
+mapview(irisParis)
 ```
 ]
 
@@ -266,7 +267,7 @@ On peut aussi spécifier un attribut à observer avec l'instruction `zcol` :
 
 .small[
 ```{r, message = FALSE, fig.width=10, fig.height = 5}
-mapview(irisIDF, zcol = "Nom_Com")
+mapview(irisParis, zcol = "NOM_C")
 ```
 ]
 
@@ -278,9 +279,9 @@ Comme l'objet `sf` est fondamentalement un `data.frame`, on peut lui appliquer l
 
 .small[
 ```{r, fig.width=11, fig.height = 3.5}
-irisIDF %>%
-  select(DepCom, DComIris) %>% # La sélection de la colonne `geometry` est implicite #<<
-  mutate(ARRONDISSEMENT = as.numeric(DepCom) - 100) %>% #<<
+irisParis %>%
+  select(INSEE, CODE_) %>% # La sélection de la colonne `geometry` est implicite #<<
+  mutate(ARRONDISSEMENT = as.numeric(INSEE) - 100) %>% #<<
   filter(ARRONDISSEMENT >= 75001, ARRONDISSEMENT <= 75007) %>%#<<
   mapview(zcol = "ARRONDISSEMENT")
 ```
@@ -295,8 +296,8 @@ La géométrie est alors, elle-aussi, agrégée en conséquence :
 
 .small[
 ```{r}
-arrondissements_Paris <- irisIDF %>%
-  group_by(DepCom) %>%
+arrondissements_Paris <- irisParis %>%
+  group_by(INSEE) %>%
   summarise()
 
 plot(arrondissements_Paris)
@@ -317,7 +318,7 @@ joinData <-  df_dmr %>%
   ungroup()
 
 donnees_incidents <- arrondissements_Paris %>%
-  mutate(CODGEO = as.character(as.numeric(DepCom) - 100)) %>%
+  mutate(CODGEO = as.character(as.numeric(INSEE) - 100)) %>%
   left_join(joinData, by = c("CODGEO" = "CODE_POSTAL")) #<<
 
 incidents2015 <- filter(donnees_incidents, ANNEE_DECLARATION == 2015)
@@ -373,13 +374,13 @@ name: jointures-spatiales
 .small[
 ```{r}
 dmr_augmente <- dmr_spatial %>%
-  st_join(irisIDF %>% select(DComIris), join = st_within) #<<
+  st_join(irisParis %>% select(INSEE), join = st_within) #<<
 ```
 
 .pull-left[
 ```{r blob, eval = FALSE}
 dmr_augmente %>%
-  group_by(DComIris, ANNEE_DECLARATION) %>%
+  group_by(INSEE, ANNEE_DECLARATION) %>%
   summarise(NbIncidents = n()) %>%
   ungroup() %>%
   head()
@@ -412,19 +413,19 @@ Voir les exemples illustrées dans les *vignettes* du *package* `sf` : [Manipula
 .small[
 ```{r}
 nbIncidentsIris <- dmr_spatial %>%
-  st_join(irisIDF %>% select(DComIris), join = st_within) %>%
+  st_join(irisParis %>% select(INSEE), join = st_within) %>%
   st_set_geometry(NULL) %>% # On n'a plus besoin que ce soit un objet spatial
-  group_by(DComIris, ANNEE_DECLARATION) %>%
+  group_by(INSEE, ANNEE_DECLARATION) %>%
   summarise(NbIncidents = n()) %>% #<<
   ungroup()
 
-irisIDF_Incidents <- irisIDF %>%
+irisParis_Incidents <- irisParis %>%
   mutate(surface = st_area(.)) %>% #<<
-  left_join(nbIncidentsIris, by = "DComIris")
+  left_join(nbIncidentsIris, by = "INSEE")
 
-densite_incidents <- irisIDF_Incidents %>%
+densite_incidents <- irisParis_Incidents %>%
   mutate(densiteIncidents = NbIncidents / (surface / 1E6)) %>% # Pour avoir une densité / km² #<<
-  select(DepCom, DComIris, ANNEE_DECLARATION, NbIncidents, densiteIncidents)
+  select(INSEE, CODE_, ANNEE_DECLARATION, NbIncidents, densiteIncidents)
 
 # Les densités sont exprimées avec des "unités", qui complexifient le traitement.
 # On les enlève donc :
@@ -522,8 +523,8 @@ propSymbolsLayer(x = densite_incidents %>% filter(ANNEE_DECLARATION == 2017),
                  legend.title.txt = "Nombre de déclarations par IRIS en 2017")
 
 # On ajoute les labels des arrondissements
-labelLayer(x = arrondissements_Paris %>% mutate(DepCom = as.numeric(DepCom) - 100),
-           txt = "DepCom",
+labelLayer(x = arrondissements_Paris %>% mutate(CP = as.numeric(INSEE) - 100),
+           txt = "CP",
            col = "#B6C1C8",
            bg = "#1F4257",
            halo = TRUE,
@@ -556,8 +557,8 @@ propSymbolsLayer(x = densite_incidents %>% filter(ANNEE_DECLARATION == 2017),
                  legend.title.txt = "Nombre de déclarations par IRIS en 2017")
 
 # On ajoute les labels des arrondissements
-labelLayer(x = arrondissements_Paris %>% mutate(DepCom = as.numeric(DepCom) - 100),
-           txt = "DepCom",
+labelLayer(x = arrondissements_Paris %>% mutate(CP = as.numeric(INSEE) - 100),
+           txt = "CP",
            col = "#B6C1C8",
            bg = "#1F4257",
            halo = TRUE,
@@ -587,7 +588,7 @@ colorPalette <- colorBin("YlOrRd",
                          bins = seuils)
 
 infosPopup <- sprintf("<strong>%s</strong><br/>%s incidents  (%.1f / km²)",
-                      densite_incidents2017$DComIris,
+                      densite_incidents2017$CODE_,
                       densite_incidents2017$NbIncidents,
                       densite_incidents2017$densiteIncidents) %>% lapply(htmltools::HTML)
 
@@ -617,7 +618,7 @@ densite_incidents2017 <- densite_incidents %>%
 seuils <- quantile(densite_incidents2017$densiteIncidents, probs = seq(from = 0, to = 1, by = 0.2))
 colorPalette <- colorBin("YlOrRd", domain = densite_incidents2017$densiteIncidents, bins = seuils)
 infosPopup <- sprintf("<strong>%s</strong><br/>%s incidents  (%.1f / km²)",
-                      densite_incidents2017$DComIris,
+                      densite_incidents2017$CODE_,
                       densite_incidents2017$NbIncidents,
                       densite_incidents2017$densiteIncidents) %>% lapply(htmltools::HTML)
 
@@ -632,9 +633,4 @@ leaflet(data = densite_incidents2017) %>%
             position = "topright")
 ```
 ]
-
----
-name: analyse-spatiale
-## Un peu d'analyse spatiale ?
-
 
