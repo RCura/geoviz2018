@@ -1,50 +1,56 @@
----
-title: "Interfaces graphiques avec R et shiny"
-subtitle: "1 - Les concepts de base de shiny"
-author: "Robin Cura & Lise Vaudor<br/>d'après L. Vaudor : <u><a href='https://github.com/lvaudor/support_shiny'>Formation shiny (2018)</a></u>"
-date: ["16/10/2018<br/><br /> École Thématique GeoViz 2018 "]
-output:
-  xaringan::moon_reader:
-    chakra: "www/libs/remark.min.js"
-    lib_dir: "www/libs"
-    css: ["www/xaringan-themer.css", "www/style.css"]
-    nature:
-        beforeInit: "macros.js"
-        highlightLines: true
-editor_options: 
-  chunk_output_type: console
----
-```{r xaringan-themer, include = FALSE}
-library(xaringan)
-library(xaringanthemer) # devtools::install_github("gadenbuie/xaringanthemer")
-duo(
-  primary_color = "#1F4257",
-  secondary_color = "#F97B64",
-  header_font_google = google_font("Josefin Sans"),
-  text_font_google   = google_font("Montserrat", "300", "300i"),
-  code_font_google   = google_font("Droid Mono"),
-  outfile = "www/xaringan-themer.css"
-)
-library(knitr)
-opts_chunk$set(cache = TRUE,
-               cache.lazy = FALSE)
-hook_source <- knitr::knit_hooks$get('source')
-knitr::knit_hooks$set(source = function(x, options) {
-  x <- stringr::str_replace(x, "^[[:blank:]]?([^*].+?)[[:blank:]]*#<<[[:blank:]]*$", "*\\1")
-  hook_source(x, options)
-})
-```
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Interfaces graphiques avec R et shiny</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Robin Cura &amp; Lise Vaudor d’après L. Vaudor : Formation shiny (2018)" />
+    <link rel="stylesheet" href="www/xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="www/style.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-library(dplyr)
-library(ggplot2)
-library(readr)
-library(lubridate)
-library(stringr)
-library(shiny)
-```
+# Interfaces graphiques avec R et shiny
+## 1 - Les concepts de base de shiny
+### Robin Cura &amp; Lise Vaudor<br/>d’après L. Vaudor : <u><a href='https://github.com/lvaudor/support_shiny'>Formation shiny (2018)</a></u>
+### 16/10/2018<br/><br /> École Thématique GeoViz 2018
 
+---
+
+
+
+
+
+
+## Sommaire
+
+.large[
+.pull-left[
+- [Organisation générale d'une application shiny](#orga-generale)
+- Les composants/widgets
+  - [Les Inputs](#inputs)
+  - [Les Outputs](#outputs)
+
+- Mise en page
+  - [Layouts](#layouts)
+  - [Panels](#panels)
+]
+
+.pull-right[
+- [Réactivité : résumé](#all-reactives)
+  - [Base](#reactive-base)
+  - [Sortie réactive](#reactive-outputs)
+  - [Fonctions réactives](#reactive-fonctions)
+  - [Observation d'éléments réactifs](#reactive-observe)
+  - [Bloquer la réactivité](#reactive-isolate)
+  
+- Applications
+  - [Démonstration](#demonstration)
+  - [Exercice](#exercice)
+]
+]
+---
 ## Shiny: qu'est-ce que c'est?
 
 Shiny, c'est un **package R** qui facilite la construction d'**applications web** interactives depuis R.
@@ -69,13 +75,9 @@ Les utilisateurs peuvent simplement manipuler une application "clique-boutons" p
 
 - Une connaissance de **html**, **css** et **javascript** reste un plus pour produire des applications plus personnalisées.
 
-.small[
-```
-test
-```
-]
 
 ---
+name: orga-generale
 ## Shiny: qu'est-ce que c'est?
 
 .pull-left[
@@ -94,7 +96,7 @@ Une Shiny App se structure en deux parties:
 ## Introduction: démarrer avec le template
 
 .pull-left[
-Pour construire votre première appli Shiny, vous pouvez vous aider du **modèle** (*template*) fourni par RStudio, en faisant `File -> New file -> Shiny Web App -> Multiple File`.
+Pour construire votre première appli Shiny, vous pouvez vous aider du **modèle** (*template*) fourni par RStudio, en faisant `File -&gt; New file -&gt; Shiny Web App -&gt; Multiple File`.
 
 Deux fichiers sont alors créés: `server.R`, et `ui.R`.
 
@@ -106,7 +108,7 @@ Deux fichiers sont alors créés: `server.R`, et `ui.R`.
 .pull-right[
 Vous pouvez ouvrir l'un ou l'autre, et cliquer sur le bouton **Run App** en haut à droite de la partie "script" de l'interface RStudio pour **lancer l'application**.
 
-![](www/img/basics_app_template.png)
+![:scale 94%](www/img/basics_app_template.png)
 ]
 
 ---
@@ -114,12 +116,12 @@ Vous pouvez ouvrir l'un ou l'autre, et cliquer sur le bouton **Run App** en haut
 
 ![](www/img/building_an_app_2.png)
 
-- ![](www/img/ui.png) UI :
+- ![:scale 4%](www/img/ui.png) UI :
 
   - Ajoutez des **éléments d'entrée** à l'interface avec les fonctions de type `*Input()`
   - Ajoutez des **éléments de sortie** à l'interface avec les fonctions de type `*Output()`
 
-- ![](www/img/server.png) server:
+- ![:scale 4%](www/img/server.png) server:
 
   - Encapsulez le code utilisé pour créer l'output dans une fonction de type `render*()`
   - **Assignez à l'output** la sortie de `render*()`.
@@ -127,18 +129,18 @@ Vous pouvez ouvrir l'un ou l'autre, et cliquer sur le bouton **Run App** en haut
 ---
 ## Construire une app (2)
 
-- Deux structures de base sont possibles pour les apps: soit avoir tout réuni dans un même script (`app.R`), soit séparer la partie **ui** et la partie **server** dans deux fichiers (`ui.R` et `server.R`). C'est cette deuxième solution que nous allons privilégier.
+- Deux structures de base sont possibles pour les apps: soit avoir tout réuni dans un même script (`app.R`), soit séparer la partie **ui** et la partie **server** dans deux fichiers (**ui.R** et **server.R**). C'est cette deuxième solution que nous allons privilégier ici.
 
 .center[
 ![:scale 50%](www/img/building_an_app_2bis.png)
 ]
 
 .pull-left[
-- Dans cet exemple, `ui` est un *objet de type UI* issu de l'appel à une *fonction*, ici `fluidPage()`. Les différents éléments passés à fluidPage() sont donc des *arguments* (i.e. ils sont séparés par des virgules!). 
+- Dans cet exemple, `ui` est un *objet de type UI* issu de l'appel à une *fonction*, ici `fluidPage()`. Les différents éléments passés à fluidPage() sont donc des *arguments* : ils sont séparés par des virgules. 
 ]
 
 .pull-right[
-- Au contraire, dans `server` on définit une *fonction*, ayant pour arguments *input* et *output*. Le corps de cette fonction s'écrit donc comme une suite de lignes de commandes (i.e. les commandes sont séparées par des retours à la ligne!)
+- Dans `server` on définit une *fonction*, avec `input` et `output` comme arguments. Le corps de cette fonction s'écrit donc comme une suite de lignes de commandes : les commandes sont séparées par des retours à la ligne.
 ]
 
 ---
@@ -158,7 +160,7 @@ Vous pouvez ouvrir l'un ou l'autre, et cliquer sur le bouton **Run App** en haut
 ---
 # Partie 2 : Inputs et outputs
 ---
-
+name: inputs
 ## Inputs
 
 - Les **inputs** sont les composants (*widgets*) de l'interface graphique qui permettent aux utilisateurs de fournir des valeurs aux paramètres d'entrée.
@@ -234,7 +236,8 @@ Parmi les autres widgets les plus utiles, on trouve:
 - On peut récuperer les valeurs d'un **input**, dans la partie `server` d'une appli, en indiquant son nom dans l'objet `input` — une sorte de liste —, donc avec l'opérateur **$** : `input$ID_DE_L_INPUT`
 
 .small[
-```{r, eval = FALSE}
+
+```r
 #############
 # Partie UI #
 #############
@@ -248,15 +251,16 @@ selectInput(inputId = "maSelection", label = "Choisir un élément",
 # Partie server #
 #################
 input$monSlider1
-# > 25
+# &gt; 25
 input$monSlider2
-# > 0
+# &gt; 0
 input$maSelection
-# > "Pomme"
+# &gt; "Pomme"
 ```
 ]
 
 ---
+name: outputs
 ## Outputs (1)
 
 - Les **outputs** sont les composants de l'interface graphique qui permettent d'afficher des éléments résultant d'un traitement dans R (graphiques, tables, textes...).
@@ -285,7 +289,7 @@ Il est également possible de produire des outputs de type
 ---
 ## Outputs (3)
 
-- Shiny génère (*render*) le contenu des **outputs** et, celui-ci réagit donc à du code écrit dans la partie `server` de shiny : <br/>
+- Shiny génère (*render*) le contenu des **outputs** et, celui-ci réagit donc à du code écrit dans la partie `server` de shiny : &lt;br/&gt;
 
 .center[
 ![:scale 90%](www/img/outputs.png)
@@ -305,7 +309,8 @@ Remarquez, dans le graphique ci-dessus, comme une fonction `renderTruc()` côté
 ---
 ## Outputs (5)
 .small[
-```{r, eval = FALSE}
+
+```r
 #############
 # Partie UI #
 #############
@@ -319,28 +324,28 @@ textOutput(outputId = "texte1")
 #################
 # Partie server #
 #################
-output$texte1 <- renderText({print(c(1:50))})
-output$graphique1 <- renderPlot({plot(1:50)})
-output$graphique2 <- renderPlot({plot(50:1)})
+output$texte1 &lt;- renderText({print(c(1:50))})
+output$graphique1 &lt;- renderPlot({plot(1:50)})
+output$graphique2 &lt;- renderPlot({plot(50:1)})
 ```
 ]
 .pull-left[
-```{r, echo = FALSE, fig.hold = TRUE, fig.width = 2.4, fig.height= 3}
-plot(c(1:50))
-plot(c(50:1))
-```
+![](GeoViz2018_R_shiny_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;![](GeoViz2018_R_shiny_files/figure-html/unnamed-chunk-3-2.png)&lt;!-- --&gt;
 ]
 .small[
 .pull-right[
-```{r, echo = FALSE}
-print(c(1:50))
+
+```
+##  [1]  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15 16 17 18 19 20 21 22 23
+## [24] 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46
+## [47] 47 48 49 50
 ```
 ]
 ]
 ---
 # Partie 3 : Organisation de l'UI : Layouts et panels
 ---
-
+name: panels
 ## Les Panels (1)
 
 - Les **panels** permettent de réunir différents éléments (widgets, textes, images...). Les différents types de panels correspondent à différents **styles** (par exemple, fonds gris pour `wellPanel()`, caractères colorés pour `titlePanel()`, etc.)
@@ -361,7 +366,8 @@ Tout ce que je vais vous montrer dans cette partie **concerne la partie UI des S
     - la hauteur d'une ligne est celle de son plus grand élément
     - la page est divisée en **12 colonnes** : une colonne de largeur (`width`) **6** occupera donc la moitiée de l'espace horizontal
 
-```{r, eval = FALSE}
+
+```r
 fluidPage(
   titlePanel("Ceci est un titlePanel", ),
   fluidRow(column(width = 6, "Première colonne de largeur 6"),
@@ -379,7 +385,8 @@ fluidPage(
 ## Les Panels (2)
 
 .small[
-```{r, eval = FALSE}
+
+```r
 fluidPage(
   titlePanel("Ceci est un titlePanel", ),
   fluidRow(column(width = 6, "Première colonne de largeur 6"),
@@ -397,6 +404,7 @@ fluidPage(
 ![:scale 100%](www/img/shiny-layout-columns-example.png)
 ]
 ---
+name: layouts
 ## Layouts (1)
 
 - On peut par ailleurs utiliser des types de **layouts** prédéfinis pour organiser son appli...
@@ -439,7 +447,9 @@ fluidPage(
 
 ---
 # Partie 4 : Réactivité
+
 ---
+name: reactive-base
 ## Réactivité : base
 
 .center[
@@ -453,6 +463,7 @@ Dans sa version la plus simple, la chaîne de réactivité ressemble en fait à 
 Comprendre : à chaque changement de `input$x`, l'`expression()` est ré-évaluée et met à jour `output$y`.
 
 ---
+name: reactive-outputs
 ## Fournir des outputs réactifs
 
 .center[
@@ -517,13 +528,14 @@ A chaque changement de valeur de `input_b` ou `input_c` :
 ## Fournir des outputs réactifs - exemple (3)
 
 .smaller[
-```{r, eval = FALSE}
+
+```r
 # Global
 library(shiny)
 library(tidyverse)
 
 # UI
-ui <- fluidPage(
+ui &lt;- fluidPage(
     fluidRow(
         column(4, sliderInput(inputId = "input_a", label = "Nb Observations",
                               min = 1, max = 150, value = 150)),
@@ -539,15 +551,15 @@ ui <- fluidPage(
 )
 
 # Server
-server <- function(input, output) {
-output$output_d <- renderDataTable({
-    table_filtree <- iris %>%
-        sample_n(input$input_a) %>%
+server &lt;- function(input, output) {
+output$output_d &lt;- renderDataTable({
+    table_filtree &lt;- iris %&gt;%
+        sample_n(input$input_a) %&gt;%
         arrange(Species, Sepal.Length)
     })
-output$output_e <- renderPlot({
-    table_filtree <- iris %>%
-        sample_n(input$input_a) %>%
+output$output_e &lt;- renderPlot({
+    table_filtree &lt;- iris %&gt;%
+        sample_n(input$input_a) %&gt;%
         arrange(Species, Sepal.Length)
     ggplot(table_filtree) +
         geom_histogram(aes(x = Sepal.Length), bins = input$input_b,
@@ -569,17 +581,18 @@ output$output_e <- renderPlot({
 
 .pull-left[
 .smaller[
-```{r, eval = FALSE}
+
+```r
 # Server
-server <- function(input, output) {
-output$output_d <- renderDataTable({
-    table_filtree <- iris %>%
-        sample_n(input$input_a) %>% #<<
+server &lt;- function(input, output) {
+output$output_d &lt;- renderDataTable({
+    table_filtree &lt;- iris %&gt;%
+*       sample_n(input$input_a) %&gt;%
         arrange(Species, Sepal.Length)
     })
-output$output_e <- renderPlot({
-    table_filtree <- iris %>%
-        sample_n(input$input_a) %>% #<<
+output$output_e &lt;- renderPlot({
+    table_filtree &lt;- iris %&gt;%
+*       sample_n(input$input_a) %&gt;%
         arrange(Species, Sepal.Length)
     ggplot(table_filtree) +
         geom_histogram(aes(x = Sepal.Length),
@@ -604,6 +617,7 @@ output$output_e <- renderPlot({
 - La "réactivité" ne peut reposer uniquement sur des `input`, on a aussi besoin de structures **réactives** capables de stocker (et de mettre à jour) des objets.
 
 ---
+name: reactive-fonctions
 ## Modulariser les réactions
 
 .center[
@@ -626,17 +640,18 @@ output$output_e <- renderPlot({
 .pull-left[
 On adapte notre code inital
 .small[
-```{r, eval = FALSE}
+
+```r
 # Server
-server <- function(input, output) {
-output$output_d <- renderDataTable({
-    table_filtree <- iris %>%
-        sample_n(input$input_a) %>%
+server &lt;- function(input, output) {
+output$output_d &lt;- renderDataTable({
+    table_filtree &lt;- iris %&gt;%
+        sample_n(input$input_a) %&gt;%
         arrange(Species, Sepal.Length)
     })
-output$output_e <- renderPlot({
-    table_filtree <- iris %>%
-        sample_n(input$input_a) %>%
+output$output_e &lt;- renderPlot({
+    table_filtree &lt;- iris %&gt;%
+        sample_n(input$input_a) %&gt;%
         arrange(Species, Sepal.Length)
     ggplot(table_filtree) +
         geom_histogram(aes(x = Sepal.Length),
@@ -654,20 +669,21 @@ output$output_e <- renderPlot({
 Avec une fonction `reactive()` pour stocker notre table
 
 .small[
-```{r, eval = FALSE}
+
+```r
 # Server
-server <- function(input, output) {
+server &lt;- function(input, output) {
   
-table_filtree <- reactive({ #<<
-  iris %>% #<<
-    sample_n(input$input_a) %>% #<<
-    arrange(Species, Sepal.Length) #<<
-})  #<<
-output$output_d <- renderDataTable({
-    table_filtree() #<<
+*table_filtree &lt;- reactive({
+* iris %&gt;%
+*   sample_n(input$input_a) %&gt;%
+*   arrange(Species, Sepal.Length)
+*})
+output$output_d &lt;- renderDataTable({
+*   table_filtree()
     })
-output$output_e <- renderPlot({
-    ggplot(table_filtree()) + #<<
+output$output_e &lt;- renderPlot({
+*   ggplot(table_filtree()) +
         geom_histogram(aes(x = Sepal.Length),
                        bins = input$input_b,
                        fill = input$input_c)
@@ -679,12 +695,13 @@ output$output_e <- renderPlot({
 
 - Une fonction `reactive()` est une **fonction** : on l'apelle donc avec des parenthèses :
 .small[
-```{r, eval = FALSE}
+
+```r
 # Declaration
-abc <- reactive(mean(iris$Sepal.Length))
+abc &lt;- reactive(mean(iris$Sepal.Length))
 # Utilisation
 abc()
-#> 5.843333
+#&gt; 5.843333
 ```
 ]
 ---
@@ -693,12 +710,58 @@ abc()
 ![](www/img/reactif1.gif)
 
 ---
-## Observer des variables
+name: reactive-observe
+## Observer des variables (1)
 
-Ajouter un point sur l'utilisation de `observe()`
+- On peut parfois avoir besoin d'observer et de réagir à des changements de variables réactives, sans pour autant renvoyer un résultat.
 
+  - Par exemple, dans l'application présentée, le *slider* du nombre de barres de l'histogramme ("Nb barres") a des bornes min et max définies dans l'`UI`, mais on peut vouloir ajuster ces bornes.
+  - Quand les 150 observations sont présentes, le maximum (*30*) est adapté
+  - Mais quand on échantillonne seulement 20 observations, le nombre de barres maximum devrait s'adapter.
+  
+On utilise pour cela la fonction `observe()` :
+.center[
+![:scale 70%](www/img/reac_trigger_arbitrary_code.png)
+]
 
 ---
+## Observer des variables (2)
+
+.pull-left[
+![](www/img/shiny-thinkr-observe.png)
+]
+
+.pull-right[
+.small[
+
+```r
+# Server
+server &lt;- function(input, output, session) {
+# [...]
+
+observe({
+  if (input$input_a &gt; 30){
+  updateSliderInput(inputId = "input_b",
+                    session = session,
+                    min = 2,
+                    max = 30)
+  } else {
+  updateSliderInput(inputId = "input_b",
+                    session = session,
+                    min = 2,
+                    max = input$input_a,
+                    value = input$input_a/2)
+  }
+})
+
+}
+```
+
+]
+]
+
+---
+name:reactive-isolate
 ## Empêcher des réactions
 
 - On peut chercher à ne pas executer un code quand un élément réactif change
@@ -718,7 +781,8 @@ Ajouter un point sur l'utilisation de `observe()`
 
 .pull-right[
 .small[
-```{r, eval = FALSE}
+
+```r
 # UI
 fluidRow(
   column(width = 4,textInput("word1",
@@ -730,7 +794,7 @@ fluidRow(
   column(width = 4,textOutput("combi"))
 )
 # Server      
-output$combi <- renderText({
+output$combi &lt;- renderText({
   paste(input$word1,isolate(input$word2))
   })
 ```
@@ -740,3 +804,74 @@ output$combi <- renderText({
 - Ici, l'output n'est actualisé que quand le deuxième input est modifié.
 - **Une modification du premier input ne déclenche pas le code contenu dans le contexte réactif**.
 
+---
+name: all-reactives
+## Récapitulatif des éléments réactifs
+
+.center[
+![:scale 95%](www/img/shiny-thinkr-reactives_1.png)
+![:scale 65%](www/img/shiny-thinkr-reactives_2.png)
+]
+
+---
+name: demonstration
+class: middle
+## Une petite démonstration
+
+- On va adapter l'application de base aux données "Dans Ma Rue" pour créer une application d'exploration interactive de ces données.
+- On souhaite donc avoir :
+  - Une carte de localisation des incidents
+  - Un moyen de sélectionner l'année
+  - Un moyen d'isoler des types d'incidents
+  - Un graphique récapitulatif des incidents sélectionnés
+
+
+---
+name: exercice
+class: middle, inverse
+## Exercice
+
+#### Depuis la base applicative créée auparavant, améliorer l'application pour la rendre plus adaptée à l'exploration des données.
+
+Quelques idées/pistes :
+- Remplacer la carte statique par une carte dynamique
+- Intégrer une exploration des sous-types
+- Intégrer les données IRIS pour les rendre elles aussi explorables
+- Remplacer le graphique récapitulatif par un graphique interactif
+- Changer la manière de sélectionner l'année
+    </textarea>
+<script src="www/libs/remark.min.js"></script>
+<script src="www/macros.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
