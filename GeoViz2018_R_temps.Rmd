@@ -180,13 +180,13 @@ as.period(diff)
 
 - **durées**: `dxxx()` (par exemple `ddays()` ou `dyears()`) .small[
 ```{r}
-t1+dyears(10)
+t1 + dyears(10)
 ```
 ]
 - **périodes**: fonctions `xxx()` (par exemple `days()` ou `months()`)
 .small[
 ```{r}
-t1+years(10)
+t1 + years(10)
 ```
 ]
 ]
@@ -206,7 +206,7 @@ t0 <- dmy_hms("01/01/2018 00:00:00")
 
 ```{r}
 t0
-t0+dminutes(seq(0,45,by=15))
+t0 + dminutes(seq(from = 0, to = 45, by = 15))
 ```
 ]
 
@@ -214,8 +214,8 @@ Création d'**intervalles**:
 
 .small[
 ```{r}
-itv <- interval(t0+dminutes(seq(0,45,by=15)),
-                t0+dminutes(seq(0,45,by=15)))
+itv <- interval(t0 + dminutes(seq(from = 0, to = 45, by = 15)),
+                t0+dminutes(seq(from = 0, to = 45, by = 15)))
 # commande equivalente: ...%--%...
 ```
 ]
@@ -259,7 +259,7 @@ name: visual-tendance
 ## Visualiser une tendance
 
 ```{r fig.width=10, fig.height=3}
-ggplot(df_dmr_parjour,aes(x=DATEDECL, y=NBDECL))+
+ggplot(df_dmr_parjour, aes(x=DATEDECL, y=NBDECL))+
   geom_line()+
   geom_smooth(span=0.1)#<<
 ```
@@ -273,9 +273,10 @@ Pour visualiser une tendance il est également possible de représenter une **mo
 
 ```{r, fig.width=10, fig.height=3}
 library(zoo)
-df_dmr_parjour <-df_dmr_parjour %>% 
-         mutate(movavNBDECL=rollapply(NBDECL,15,mean,fill=NA))#<<
-ggplot(df_dmr_parjour, aes(x=DATEDECL, y=NBDECL))+
+df_dmr_parjour <- df_dmr_parjour %>% 
+         mutate(movavNBDECL = rollapply(NBDECL,15,mean,fill=NA))#<<
+
+ggplot(df_dmr_parjour, aes(x =DATEDECL, y=NBDECL))+
   geom_line()+
   geom_line(aes(y=movavNBDECL), col="steelblue", size=1)#<<
 ```
@@ -288,9 +289,9 @@ Par exemple, ici, on **agrège** la donnée par **semaine**.
 
 ```{r}
 df_dmr_parsemaine <- df_dmr %>%
-         mutate(SEMAINE=round_date(DATEDECL,"week")) %>% 
+         mutate(SEMAINE = round_date(DATEDECL,"week")) %>% 
          group_by(SEMAINE) %>% #<<
-         summarise(NBDECL=n()) #<<
+         summarise(NBDECL = n()) #<<
 ```
 
 La représentation des données s'en trouve de fait **moins bruitée**:
@@ -309,8 +310,10 @@ name: visual-periode-intervalle
 Par exemple, pour considérer la périodicité du signal sur une semaine, on peut récupérer le **jour de la semaine** avec la fonction `wday()`.
 .small[
 ```{r}
-df_dmr_joursemaine=df_dmr %>% 
-  mutate(JOURSEMAINE=wday(DATEDECL,label=TRUE)) #<< 
+df_dmr_joursemaine <- df_dmr %>% 
+  mutate(JOURSEMAINE = #<<
+           wday(DATEDECL,label = TRUE) #<<
+         ) #<< 
 
 ```
 ]
@@ -320,7 +323,7 @@ On peut alors représenter le **nombre total de déclarations d'incidents en fon
 
 ```{r fig.width=5, fig.height=3}
 ggplot(df_dmr_joursemaine,
-       aes(x=JOURSEMAINE))+
+       aes(x = JOURSEMAINE)) +
   geom_bar()
 ```
 ]
@@ -331,8 +334,8 @@ ggplot(df_dmr_joursemaine,
 .small[
 ```{r fig.width=10, fig.height=3}
 vacances <- readr::read_csv("data/vacances.csv") %>% 
-  mutate(Debut=as_datetime(dmy(Fin_des_cours)), #<<
-         Fin=as_datetime(dmy(Reprise_des_cours))) #<<
+  mutate(Debut = as_datetime(dmy(Fin_des_cours)), #<<
+         Fin = as_datetime(dmy(Reprise_des_cours))) #<<
 
 ggplot(df_dmr_parjour,
             aes(x=DATEDECL, y=NBDECL))+
