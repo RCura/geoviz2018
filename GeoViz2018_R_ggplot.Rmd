@@ -1,14 +1,15 @@
 ---
 title: "Visualisation de données avec R"
 subtitle: 'La <i>"Grammar of Graphics"</i>'
-author: "Robin Cura, Hélène Mathian & Lise Vaudor"
+author: "Robin Cura & Lise Vaudor"
 date: ["15/10/2018<br/><br /> École Thématique GeoViz 2018 "]
 output:
   xaringan::moon_reader:
+    chakra: "www/libs/remark.min.js"
     lib_dir: "www/libs"
     css: ["www/xaringan-themer.css", "www/style.css"]
     nature:
-        beforeInit: "macros.js"
+        beforeInit: "www/macros.js"
         highlightLines: true
 editor_options: 
   chunk_output_type: console
@@ -54,7 +55,6 @@ knitr::knit_hooks$set(source = function(x, options) {
 [Exercice d'application](#exercice)
 
 [Ressources et supports](#supports)
-
 
 ---
 name: grammar-of-graphics
